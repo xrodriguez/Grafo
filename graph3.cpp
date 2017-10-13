@@ -79,33 +79,17 @@ void draw(int numberNodes,vector<Node> nodes){
     vector<sf::CircleShape> shapes ;
     
 
-/*    for (int i = 0; i < numberNodes; ++i){
+    for (int i = 0; i < numberNodes; ++i){
         sf::CircleShape shape(1.f);
         shape.setFillColor(sf::Color::Green);
         sf::Vector2i v2;
         v2 = window.mapCoordsToPixel(sf::Vector2f(nodes.at(i).x,nodes.at(i).y));
-        shape.setPosition((v2.x/(width*10))-400,v2.y/(height*10));
+        shape.setPosition( ( v2.x/(width))-8200, v2.y/(height) +200);
         shapes.push_back(shape);
     }
-*/
 
-	//read node from file
-	ifstream read("listNode.txt");	//open the file
-	if(!read){
-		std::cout<<"Not FILE"<<std::endl;//file doesn't exist
-	}
-	char tmp;
-	float x2=0, y2=0, t;
-	int i=0;
-	while(read >> t>>tmp>>x2>>tmp>>y2){
-		sf::CircleShape shape(1.f);
-        shape.setFillColor(sf::Color::Green);
-		sf::Vector2i v2;
-        v2 = window.mapCoordsToPixel(sf::Vector2f(nodes.at(i).x,nodes.at(i).y));
-		shape.setPosition( ( v2.x/(width))-8200, v2.y/(height) +200);
-        shapes.push_back(shape);
-		i++;
-	}
+
+	
 
 
 
@@ -226,10 +210,28 @@ int main()
     
     Graph g(numberNodes);
 
-    for (int i = 0; i < numberNodes; ++i){
+    /*for (int i = 0; i < numberNodes; ++i){
         Node node(data[i][0],data[i][1],i);
         nodes.push_back(node);
-    }
+    }*/
+
+	//read node from file
+	ifstream read("listNode.txt");	//open the file
+	if(!read){
+		std::cout<<"Not FILE"<<std::endl;//file doesn't exist
+	}
+	char tmp;
+	float x2=0, y2=0, t;
+	int i=0;
+	while(read >> t>>tmp>>x2>>tmp>>y2){
+		Node node(x2,y2,i);
+        nodes.push_back(node);
+		i++;
+	}
+
+
+
+
 
     for (int i = 0; i < dataEdges.size(); ++i)
     {
