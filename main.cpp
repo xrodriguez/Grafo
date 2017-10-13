@@ -5,70 +5,21 @@
 #include <iostream>
 #include <list>
 
+#include "Heuristics.h"
+#include "Graph.h"
+#include "Node.h"
+#include "Edge.h"
+
 using namespace std;
 # define INF 0x3f3f3f3f
  
 // iPair ==>  Integer Pair
 typedef pair<int, int> iPair;
  
-class Node{
-    public : double x , y ;
-             int tag ;
-
-    public : 
-        Node(){
-            this->x = 0;
-            this->y = 0;
-            this->tag = 0;
-        }
-        Node(double x , double y, int tag){
-            this->x = x;
-            this->y = y;
-            this->tag = tag;
-        }
-
-};
-
-class Edge
-{
-    public : Node *start;
-             Node *end;
-             double weight ;
-    public : 
-        Edge(Node *start , Node *end ){
-            this->start = start;
-            this->end = end;
-            this->weight = sqrt(pow(start->x-end->x,2)+pow(start->y-end->y,2));
-        }
-};
 
 
-class Graph
-{
 
-    public : int numberNodes;    // No. of vertices
-            // In a weighted graph, we need to store vertex
-            // and weight pair for every edge
-            list<pair<Node *,double>> *adj;
- 
-    public:
-        Graph(int numberNodes){
-            this->numberNodes = numberNodes;
-            adj = new list<pair<Node *,double>> [numberNodes];
-        }  
-        // function to add an edge to graph
-        void addEdge(Edge edge){
 
-            adj[edge.start->tag].push_back(make_pair(edge.start, edge.weight));
-            adj[edge.end->tag].push_back(make_pair(edge.end, edge.weight));
-        }
-
-        void Astar(Node start,Node end){
-            return ;
-        }
-        // prints shortest path from s
-        //void shortestPath(int s);
-};
 
 
 void draw(int numberNodes,vector<Node> nodes){
@@ -177,27 +128,9 @@ int main()
     // create the graph given in above fugure
     int numberNodes = 10;
 
-    vector< vector <double> > dataEdges {
-        {1,2},
-        {2,3},
-        {3,4},
-        {4,5},
-        {4,10},
-        {5,6},
-        {6,7},
-        {7,8},
-        {8,9},
-        {9,10}
-    };
-
     vector<Node> nodes ;
     
     Graph g(numberNodes);
-
-    /*for (int i = 0; i < numberNodes; ++i){
-        Node node(data[i][0],data[i][1],i);
-        nodes.push_back(node);
-    }*/
 
 	//read node from file
 	ifstream readNode("listNode.txt");	//open the file
@@ -230,8 +163,8 @@ int main()
 	}
 
 
-
-
+    Heuristics h;
+    h.Astar(nodes.at(0),nodes.at(9));
     /*for (int i = 0; i < dataEdges.size(); ++i)
     {
         Edge edge(&nodes[dataEdges[i][0]-1],&nodes[dataEdges[i][1]-1]);
