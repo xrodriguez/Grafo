@@ -62,6 +62,10 @@ class Graph
             adj[edge.start->tag].push_back(make_pair(edge.start, edge.weight));
             adj[edge.end->tag].push_back(make_pair(edge.end, edge.weight));
         }
+
+        void Astar(Node start,Node end){
+            return 
+        }
         // prints shortest path from s
         //void shortestPath(int s);
 };
