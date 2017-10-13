@@ -75,8 +75,7 @@ void draw(int numberNodes,vector<Node> nodes){
     vector<sf::CircleShape> shapes ;
     
 
-    for (int i = 0; i < numberNodes; ++i){
-        /* code */
+/*    for (int i = 0; i < numberNodes; ++i){
         sf::CircleShape shape(1.f);
         shape.setFillColor(sf::Color::Green);
         sf::Vector2i v2;
@@ -84,6 +83,29 @@ void draw(int numberNodes,vector<Node> nodes){
         shape.setPosition((v2.x/(width*10))-400,v2.y/(height*10));
         shapes.push_back(shape);
     }
+*/
+
+	//read node from file
+	ifstream read("listNode.txt");	//open the file
+	if(!read){
+		std::cout<<"Not FILE"<<std::endl;//file doesn't exist
+	}
+	char tmp;
+	float x2=0, y2=0, t;
+	int i=0;
+	while(read >> t>>tmp>>x2>>tmp>>y2){
+		sf::CircleShape shape(1.f);
+        shape.setFillColor(sf::Color::Green);
+		sf::Vector2i v2;
+        v2 = window.mapCoordsToPixel(sf::Vector2f(nodes.at(i).x,nodes.at(i).y));
+		shape.setPosition( ( v2.x/(width))-8200, v2.y/(height) +200);
+        shapes.push_back(shape);
+		i++;
+	}
+
+
+
+
 
     while (window.isOpen())
     {
