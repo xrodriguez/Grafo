@@ -200,25 +200,44 @@ int main()
     }*/
 
 	//read node from file
-	ifstream read("listNode.txt");	//open the file
-	if(!read){
+	ifstream readNode("listNode.txt");	//open the file
+	if(!readNode){
 		std::cout<<"Not FILE"<<std::endl;//file doesn't exist
 	}
 	char tmp;
 	float x,y,t;
 	int i=0;
-	while(read >> t>>tmp>>x>>tmp>>y){
+	while(readNode >> t>>tmp>>x>>tmp>>y){
         nodes.push_back(Node(x,y,i));
 		i++;
 	}
 
 
-    for (int i = 0; i < dataEdges.size(); ++i)
+
+	//read Edge from file
+	ifstream readEdge("listEdge.txt");	//open the file
+	if(!readEdge){
+		std::cout<<"Not FILE"<<std::endl;//file doesn't exist
+	}
+	//char tmp;
+	//float x2=0, y2=0, t;
+	i=0;
+	while(readEdge >> t>>tmp>>x>>tmp>>y){
+		Edge edge(&nodes[x-1],&nodes[y-1]);
+        //  making above shown graph
+        g.addEdge(edge);
+		i++;
+	}
+
+
+
+
+    /*for (int i = 0; i < dataEdges.size(); ++i)
     {
         Edge edge(&nodes[dataEdges[i][0]-1],&nodes[dataEdges[i][1]-1]);
         //  making above shown graph
         g.addEdge(edge);
-    }
+    }*/
 
     //cout << nodeOne.x << endl;
     //cout << edge.start->x << endl;
