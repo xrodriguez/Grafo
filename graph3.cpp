@@ -62,6 +62,10 @@ class Graph
             adj[edge.start->tag].push_back(make_pair(edge.start, edge.weight));
             adj[edge.end->tag].push_back(make_pair(edge.end, edge.weight));
         }
+
+        void Astar(Node start,Node end){
+            return ;
+        }
         // prints shortest path from s
         //void shortestPath(int s);
 };
@@ -83,12 +87,6 @@ void draw(int numberNodes,vector<Node> nodes){
         shape.setPosition( ( v2.x/(width))-8200, v2.y/(height) +200);
         shapes.push_back(shape);
     }
-
-
-	
-
-
-
 
 
     while (window.isOpen())
@@ -178,17 +176,17 @@ int main()
 {
     // create the graph given in above fugure
     int numberNodes = 10;
-    vector< vector <double> > data = {    {8825224.158,276682.7726},
-                                            {8731925.253,323651.0204},
-                                            {8714685.216,317992.8898},
-                                            {8674105.475,299797.1793},
-                                            {8677175.367,307975.169},
-                                            {8696761.014,271186.3761},
-                                            {8806301.525,291282.6593},
-                                            {8820167.84,306122.8728},
-                                            {8758790.967,239770.5303},
-                                            {8787311.209,312266.0346}
-                                        };
+    // vector< vector <double> > data = {    {8825224.158,276682.7726},
+    //                                         {8731925.253,323651.0204},
+    //                                         {8714685.216,317992.8898},
+    //                                         {8674105.475,299797.1793},
+    //                                         {8677175.367,307975.169},
+    //                                         {8696761.014,271186.3761},
+    //                                         {8806301.525,291282.6593},
+    //                                         {8820167.84,306122.8728},
+    //                                         {8758790.967,239770.5303},
+    //                                         {8787311.209,312266.0346}
+    //                                     };
     vector< vector <double> > dataEdges {
         {1,2},
         {2,3},
