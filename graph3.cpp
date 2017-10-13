@@ -34,47 +34,77 @@ class Edge
     public : Node *start;
              Node *end;
              double weight ;
-    public : Edge(Node *start , Node *end ,double weight){
-        this->start = start;
-        this->end = end;
-        this->weight = weight;
-    }
+    public : 
+        Edge(Node *start , Node *end ){
+            this->start = start;
+            this->end = end;
+            this->weight = sqrt(pow(start->x-end->x,2)+pow(start->y-end->y,2));
+        }
 };
 
 
-// This class represents a directed graph using
-// adjacency list representation
 class Graph
 {
 
-    int V;    // No. of vertices
+    public : int numberNodes;    // No. of vertices
+            // In a weighted graph, we need to store vertex
+            // and weight pair for every edge
+            list<pair<Node *,double>> *adj;
  
-    // In a weighted graph, we need to store vertex
-    // and weight pair for every edge
-    list<pair<Node *,double>> *adj;
- 
-public:
-    Graph(int V);  // Constructor
- 
-    // function to add an edge to graph
-    void addEdge(Edge);
- 
-    // prints shortest path from s
-    //void shortestPath(int s);
+    public:
+        Graph(int numberNodes){
+            this->numberNodes = numberNodes;
+            adj = new list<pair<Node *,double>> [numberNodes];
+        }  
+        // function to add an edge to graph
+        void addEdge(Edge edge){
+
+            adj[edge.start->tag].push_back(make_pair(edge.start, edge.weight));
+            adj[edge.end->tag].push_back(make_pair(edge.end, edge.weight));
+        }
+        // prints shortest path from s
+        //void shortestPath(int s);
 };
- 
-// Allocates memory for adjacency list
-Graph::Graph(int V)
-{
-    this->V = V;
-    adj = new list<pair<Node *,double>> [V];
+
+
+void draw(int numberNodes,vector<Node> nodes){
+            // Create the main window
+    int height = 1000 , width = 1000;
+    sf::RenderWindow window(sf::VideoMode(width,height), "Grafo");
+    
+    vector<sf::CircleShape> shapes ;
+    
+
+    for (int i = 0; i < numberNodes; ++i){
+        /* code */
+        sf::CircleShape shape(1.f);
+        shape.setFillColor(sf::Color::Green);
+        sf::Vector2i v2;
+        v2 = window.mapCoordsToPixel(sf::Vector2f(nodes.at(i).x,nodes.at(i).y));
+        shape.setPosition((v2.x/(width*10))-400,v2.y/(height*10));
+        shapes.push_back(shape);
+    }
+
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        window.clear();
+        for (int i = 0; i < shapes.size(); ++i){
+            window.draw(shapes.at(i));
+        }
+     
+
+        window.display();
+    }
 }
+
  
-void Graph::addEdge(Edge edge)
-{
-    adj[edge.start->tag].push_back(make_pair(edge.start, edge.weight));
-    adj[edge.end->tag].push_back(make_pair(edge.end, edge.weight));
-}
  
 // Prints shortest paths from src to all other vertices
 // void Graph::shortestPath(int src)
@@ -153,6 +183,18 @@ int main()
                                             {8758790.967,239770.5303},
                                             {8787311.209,312266.0346}
                                         };
+    vector< vector <double> > dataEdges {
+        {1,2},
+        {2,3},
+        {3,4},
+        {4,5},
+        {4,10},
+        {5,6},
+        {6,7},
+        {7,8},
+        {8,9},
+        {9,10}
+    };
 
     vector<Node> nodes ;
     
@@ -163,15 +205,14 @@ int main()
         nodes.push_back(node);
     }
 
-    Node nodeOne(20.4,53.0,1);
-    Node nodeTwo(2.4,5.0,2);
-
-    Edge edge(&nodeOne,&nodeTwo,34);
-    //  making above shown graph
-    g.addEdge(edge);
+    for (int i = 0; i < dataEdges.size(); ++i)
+    {
+        Edge edge(&nodes[dataEdges[i][0]-1],&nodes[dataEdges[i][1]-1]);
+        //  making above shown graph
+        g.addEdge(edge);
+    }
 
     //cout << nodeOne.x << endl;
-    //cout << edge.weight << endl;
     //cout << edge.start->x << endl;
     // g.addEdge(0, 7, 8);
     // g.addEdge(1, 2, 8);
@@ -188,44 +229,8 @@ int main()
     // g.addEdge(7, 8, 7);
  
     //g.shortestPath(0);
+    draw(numberNodes,nodes);
 
-        // Create the main window
-    int height = 1000 , width = 1000;
-    sf::RenderWindow window(sf::VideoMode(width,height), "Grafo");
-    
-    vector<sf::CircleShape> shapes ;
-    
-
-    for (int i = 0; i < numberNodes; ++i){
-        /* code */
-        sf::CircleShape shape(1.f);
-        shape.setFillColor(sf::Color::Green);
-        ;
-        sf::Vector2i v2;
-        v2 = window.mapCoordsToPixel(sf::Vector2f(nodes.at(i).x,nodes.at(i).y));
-        cout<< v2.x<< " "<< v2.y << endl;
-        //shape.setPosition(v2.x/10000,v2.y/10000);
-        shape.setPosition((v2.x/(width*10))-400,v2.y/(height*10));
-        shapes.push_back(shape);
-    }
-
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-
-        window.clear();
-        for (int i = 0; i < shapes.size(); ++i){
-            window.draw(shapes.at(i));
-        }
-     
-
-        window.display();
-    }
 
  
     return 0;
