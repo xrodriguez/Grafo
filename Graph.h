@@ -17,6 +17,7 @@ class Graph
         Graph(int numberNodes);
         void addEdge(Edge edge);
         void printGraph();
+        list<Node> getSuccessors(Node node);
         ~Graph();
 
     

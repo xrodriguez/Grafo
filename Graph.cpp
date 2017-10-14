@@ -27,4 +27,13 @@ void Graph::printGraph(){
 	}
 }
 
+list<Node> Graph::getSuccessors(Node node){
+	list<Node> successors ;
+	for (auto p=adjacenseList[node.tag].begin(); p!=adjacenseList[node.tag].end(); p++){	
+		successors.push_back(*p->first);
+	}
+	return successors;
+}
+
+
 Graph::~Graph(){}
