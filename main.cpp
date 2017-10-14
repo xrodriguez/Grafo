@@ -12,14 +12,6 @@
 
 using namespace std;
 # define INF 0x3f3f3f3f
- 
-// iPair ==>  Integer Pair
-typedef pair<int, int> iPair;
- 
-
-
-
-
 
 
 void draw(int numberNodes,vector<Node> nodes){
@@ -130,8 +122,7 @@ int main()
 
     vector<Node> nodes ;
     
-    Graph g(numberNodes);
-
+    Graph graph(numberNodes);
 	//read node from file
 	ifstream readNode("listNode.txt");	//open the file
 	if(!readNode){
@@ -145,26 +136,21 @@ int main()
 		i++;
 	}
 
-
-
 	//read Edge from file
 	ifstream readEdge("listEdge.txt");	//open the file
 	if(!readEdge){
 		std::cout<<"Not FILE"<<std::endl;//file doesn't exist
 	}
-	//char tmp;
-	//float x2=0, y2=0, t;
+
 	i=0;
-	while(readEdge >> t>>tmp>>x>>tmp>>y){
-		Edge edge(&nodes[x-1],&nodes[y-1]);
-        //  making above shown graph
-        g.addEdge(edge);
+    while(readEdge >> x>>tmp>>y){
+        graph.addEdge(Edge(&nodes[x-1],&nodes[y-1]));
 		i++;
 	}
 
-
+    graph.printGraph();
     Heuristics h;
-    h.Astar(nodes.at(0),nodes.at(9));
+    h.Astar(graph,nodes.at(0),nodes.at(9));
     /*for (int i = 0; i < dataEdges.size(); ++i)
     {
         Edge edge(&nodes[dataEdges[i][0]-1],&nodes[dataEdges[i][1]-1]);

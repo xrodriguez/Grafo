@@ -9,8 +9,7 @@ class Node
         ~Node();
 
     public : 
-            double x ;
-            double y;
+            double x ,y , f,g,h;
             int tag ; 
     
 };

@@ -10,13 +10,21 @@ using namespace std;
 
 Graph::Graph(int numberNodes){
             this->numberNodes = numberNodes;
-            adj = new list<pair<Node *,double>> [numberNodes];
+            adjacenseList = new list<pair<Node *,double>> [numberNodes];
         }  
         // function to add an edge to graph
 void Graph::addEdge(Edge edge){
-
-    adj[edge.start->tag].push_back(make_pair(edge.start, edge.weight));
-    adj[edge.end->tag].push_back(make_pair(edge.end, edge.weight));
+    adjacenseList[edge.start->tag].push_back(make_pair(edge.end, edge.weight));
+    adjacenseList[edge.end->tag].push_back(make_pair(edge.start, edge.weight));
 }
 
-Graph::~Graph(){};
+void Graph::printGraph(){
+	for (int i = 0; i < this->numberNodes; i++){
+		for (auto p=adjacenseList[i].begin(); p!=adjacenseList[i].end(); p++){
+			cout << "(" << i << "," << p->first->tag << "," << p->second << ") ";
+		}
+		cout << endl ;
+	}
+}
+
+Graph::~Graph(){}

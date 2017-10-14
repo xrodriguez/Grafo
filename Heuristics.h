@@ -1,10 +1,11 @@
 #include "Node.h"
+#include "Graph.h"
 
 class Heuristics
 {
 	public:
 		Heuristics();
-		void Astar(Node start,Node end);
+		void Astar(Graph graph , Node start,Node end);
 		~Heuristics();
 	
 };
