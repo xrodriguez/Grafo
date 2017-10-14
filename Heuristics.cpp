@@ -77,33 +77,61 @@ int calculateDistance(Node node1,Node node2){
 	return sqrt(pow(node1.x-node2.x,2)+pow(node1.y-node2.y,2));
 }
 
+bool findNode(set<Node,bool (*)(const Node&, const Node&)> list , Node node){
+	for (auto it = list.begin(); it !=list.end(); it++){	
+		if(node.compare(*it)) return true;
+	}
+	return false;
+}
+
+
 void  Heuristics::Astar(Graph graph , Node start,Node end){
-	cout<< "a star" << endl ;
 	
 	//set<Node> openList;
    	set<Node, bool (*)(const Node&, const Node&) > openList(compareNode);
-	set<Node> closedList;
+   	set<Node, bool (*)(const Node&, const Node&) > closedList(compareNode);
+   	vector<pair<Node,Node>> cameFrom;
 
 	openList.insert(start);
 	start.f = 0 ;
 	while(!openList.empty()){
 		Node current = *openList.begin();
-        // eliminamos punto de open list
+        if(current.compare(end)) return;
+
         openList.erase(openList.begin());
+        closedList.insert(current);
 
 		list<Node> successors = graph.getSuccessors(current);
 		for (auto successor = successors.begin(); successor !=successors.end(); successor++){	
-    		if(successor->compare(end)) return;
-			
-    		(*successor).g = current.g + calculateDistance(*successor,current);
-          	(*successor).h = calculateDistance(end,*successor);
-          	(*successor).f = (*successor).g + (*successor).h;
+			double new_cost = current.g +  calculateDistance(*successor,current);
+			if( findNode(closedList,*successor) || new_cost < (*successor).f){
+				(*successor).g = new_cost;
+    	       	(*successor).f = (*successor).g + 0;//calculateDistance(*successor,end);
+    	       	cameFrom.push_back(make_pair((*successor),current));
+			}
+    		//if(successor in closedList)	
+			// if(findNode(closedList,*successor)){
+   //  			cout<< (*successor).tag << endl;
+			//  	continue;
+			// }
+			// if(!findNode(openList,*successor)){
+			//  	openList.insert(*successor);
+			// }
+
+   //  		double tentative_g = current.g + calculateDistance(*successor,current);
+   //        	if(tentative_g >= (*successor).g){
+   //        		continue;
+   //        	}
+   //        	cameFrom.push_back(make_pair((*successor),current));
+   //        	cout << (*successor).tag << "-" << current.tag << endl ;
+   //        	(*successor).g = tentative_g;
+   //        	(*successor).f = (*successor).g + calculateDistance(*successor,end);
         }
-
-
 	}
-	
+	cout << cameFrom.size() << endl ;
+	return; 	
 }
+
 
 
 

@@ -15,7 +15,7 @@ Graph::Graph(int numberNodes){
         // function to add an edge to graph
 void Graph::addEdge(Edge edge){
     adjacenseList[edge.start->tag].push_back(make_pair(edge.end, edge.weight));
-    adjacenseList[edge.end->tag].push_back(make_pair(edge.start, edge.weight));
+    //adjacenseList[edge.end->tag].push_back(make_pair(edge.start, edge.weight));
 }
 
 void Graph::printGraph(){

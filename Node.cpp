@@ -1,4 +1,5 @@
 #include "Node.h"
+# define INF 0x3f3f3f3f
 
 Node::Node(){
             this->x = 0;
@@ -10,6 +11,8 @@ Node::Node(double x , double y, int tag){
             this->x = x;
             this->y = y;
             this->tag = tag;
+            this->f = 0;
+            this->g = 0;
         }
 
 bool Node::compare(Node node){
