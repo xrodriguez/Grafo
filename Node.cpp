@@ -11,8 +11,8 @@ Node::Node(double x , double y, int tag){
             this->x = x;
             this->y = y;
             this->tag = tag;
-            this->f = 0;
-            this->g = 0;
+            this->f = INF;//0;
+            this->g = INF;//0;
         }
 
 bool Node::compare(Node node){
