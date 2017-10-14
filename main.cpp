@@ -2,6 +2,7 @@
 // priority_queue in STL
 #include<bits/stdc++.h>
 #include <SFML/Graphics.hpp>
+//#include <SFML/Text.hpp>
 #include <iostream>
 #include <list>
 
@@ -11,7 +12,6 @@
 #include "Edge.h"
 
 using namespace std;
-# define INF 0x3f3f3f3f
 
 
 void draw(int numberNodes,vector<Node> nodes){
@@ -24,12 +24,18 @@ void draw(int numberNodes,vector<Node> nodes){
 
     for (int i = 0; i < numberNodes; ++i){
         sf::CircleShape shape(1.f);
+
         shape.setFillColor(sf::Color::Green);
+        //shape.setFillColor(sf::Color(255,0,0));
         sf::Vector2i v2;
         v2 = window.mapCoordsToPixel(sf::Vector2f(nodes.at(i).x,nodes.at(i).y));
         shape.setPosition( ( v2.x/(width))-8200, v2.y/(height) +200);
         shapes.push_back(shape);
     }
+
+
+
+
 
 
     while (window.isOpen())
@@ -42,10 +48,20 @@ void draw(int numberNodes,vector<Node> nodes){
         }
 
         window.clear();
+        sf::Font font;
+        font.loadFromFile("arial.ttf");
         for (int i = 0; i < shapes.size(); ++i){
             window.draw(shapes.at(i));
+            sf::Text text(to_string(i), font);
+            text.setCharacterSize(15);
+            text.setStyle(sf::Text::Bold);
+            text.setColor(sf::Color::Red);
+            text.setPosition(shapes.at(i).getPosition());
+            window.draw(text);
         }
-     
+     // Declare and load a font
+// Create a text
+// Draw it
 
         window.display();
     }
@@ -149,8 +165,8 @@ int main()
 	}
 
     graph.printGraph();
-    Heuristics h;
-    h.Astar(graph,nodes.at(0),nodes.at(9));
+    //Heuristics h;
+   //h.Astar(graph,nodes.at(0),nodes.at(9));
     /*for (int i = 0; i < dataEdges.size(); ++i)
     {
         Edge edge(&nodes[dataEdges[i][0]-1],&nodes[dataEdges[i][1]-1]);
