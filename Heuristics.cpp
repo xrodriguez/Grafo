@@ -120,7 +120,7 @@ vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
         closedList.insert(current);
 
 		list<Node> successors = graph.getSuccessors(current);
-		cout<<"                 nodo: "<<current.tag+1<<   " size: " <<successors.size() <<endl;
+		cout<<"                 nodo: "<<current.tag<<   " size: " <<successors.size() <<endl;
 		for (auto successor = successors.begin(); successor !=successors.end(); successor++){
 			//cout<<"Paso2.............."<<endl;
 
@@ -133,7 +133,7 @@ vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
 			if( !findNode(openList,*successor) ){
 				//cout<<"Segundo IF......."<<endl;
 				openList.insert(*successor);
-				cout<<" Second IF tag:  "<<(*successor).tag +1 <<endl;
+				cout<<" Second IF tag:  "<<(*successor).tag <<endl;
 				//(*successor).g = new_cost;
     	       	//(*successor).f = (*successor).g + 0;//calculateDistance(*successor,end);
     	       	//cameFrom.push_back(make_pair((*successor),current));

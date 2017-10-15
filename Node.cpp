@@ -19,4 +19,12 @@ bool Node::compare(Node node){
 	return this->x == node.x and this->y == node.y;
 }
 
+double Node::getX(int scale,int translate){
+    return (this->x/scale)+translate;
+}
+
+double Node::getY(int scale,int translate){
+    return (this->y/scale)+translate;
+}
+
 Node::~Node(){};
