@@ -15,7 +15,7 @@ using namespace std;
 using namespace sf;
 
 
-void draw(Graph graph ,list<Node> shortestPath ){
+void draw(Graph graph ,vector<Node> shortestPath ){
             // Create the main window
     int height = 1000 , width = 1000;
     sf::RenderWindow window(sf::VideoMode(width,height), "Grafo");
@@ -70,15 +70,16 @@ void draw(Graph graph ,list<Node> shortestPath ){
         }
 
         for (auto node=shortestPath.begin(); node!=shortestPath.end(); node++) {
-            auto nextNode = next(node,1);
-            if(nextNode != shortestPath.end() ){
-                VertexArray lines(Lines,2);
-                lines[0].color = Color::Blue;
-                lines[0].position = Vector2f(node->getX(width,-8200),node->getY(width,200));
-                lines[1].position = Vector2f(nextNode->getX(width,-8200),nextNode->getY(width,200));
-                lines[1].color = Color::Blue;
-                window.draw(lines);            
-            }
+            cout << node->tag << endl;
+            // auto nextNode = next(node,1);
+            // if(nextNode != shortestPath.end() ){
+            //     VertexArray lines(Lines,2);
+            //     lines[0].color = Color::Blue;
+            //     lines[0].position = Vector2f(node->getX(width,-8200),node->getY(width,200));
+            //     lines[1].position = Vector2f(nextNode->getX(width,-8200),nextNode->getY(width,200));
+            //     lines[1].color = Color::Blue;
+            //     window.draw(lines);            
+            // }
         }
         window.display();
     }
@@ -178,13 +179,13 @@ int main()
 
 	i=0;
     while(readEdge >> x>>tmp>>y){
-        graph.addEdge(Edge(&nodes[x-1],&nodes[y-1]));
+        graph.addEdge(Edge(&nodes[x],&nodes[y]));
 		i++;
 	}
 
     graph.printGraph();
     Heuristics h;
-    h.Astar(graph,nodes.at(0),nodes.at(9));
+    
     /*for (int i = 0; i < dataEdges.size(); ++i)
     {
         Edge edge(&nodes[dataEdges[i][0]-1],&nodes[dataEdges[i][1]-1]);
@@ -209,11 +210,11 @@ int main()
     // g.addEdge(7, 8, 7);
  
     //g.shortestPath(0);
-    list<Node> shortestPath ;
-    shortestPath.push_back(nodes.at(0));
-    shortestPath.push_back(nodes.at(1));
-    shortestPath.push_back(nodes.at(2));
-    shortestPath.push_back(nodes.at(3));
+    vector<Node> shortestPath = h.Astar(graph,nodes.at(0),nodes.at(9)); ;
+    // shortestPath.push_back(nodes.at(0));
+    // shortestPath.push_back(nodes.at(1));
+    // shortestPath.push_back(nodes.at(2));
+    // shortestPath.push_back(nodes.at(3));
     draw(graph,shortestPath);
 
 
