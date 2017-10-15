@@ -108,7 +108,13 @@ vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
 		Node current = *openList.begin();
 		//cout<<"start :  "<<start.g<<endl;
 		//cout<<"current :  "<<current.g<<endl;
-        if(current.compare(end)) {cout <<"Ruta:::::::::::::::::::::::::::::::::::::::::::::::::::::: "<< listRuta.size() << endl ;cout<<"FIN"<<endl; return listRuta;}
+        if(current.compare(end)) {
+        	for(int i=0; i<listRuta.size(); i++){
+        		cout<<"   ->  " << listRuta[i]<< " "<<endl;
+        	}
+        	cout <<"Ruta:::::::::::::::::::::::::::::::::::::::::::::::::::::: "<< listRuta.size() << endl ;cout<<"FIN"<<endl; return listRuta;
+
+        }
         //cout<<"Paso1...... "<<endl;
         openList.erase(openList.begin());
         closedList.insert(current);
