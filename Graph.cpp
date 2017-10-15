@@ -8,14 +8,16 @@
 using namespace std;
 
 
-Graph::Graph(int numberNodes){
-            this->numberNodes = numberNodes;
+Graph::Graph(vector<Node> nodes){
+            this->numberNodes = nodes.size();
+            this->nodes = nodes;
             adjacenseList = new list<pair<Node *,double>> [numberNodes];
         }  
         // function to add an edge to graph
 void Graph::addEdge(Edge edge){
     adjacenseList[edge.start->tag].push_back(make_pair(edge.end, edge.weight));
-    //adjacenseList[edge.end->tag].push_back(make_pair(edge.start, edge.weight));
+    adjacenseList[edge.end->tag].push_back(make_pair(edge.start, edge.weight));
+    this->edges.push_back(edge);
 }
 
 void Graph::printGraph(){
