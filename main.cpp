@@ -165,8 +165,8 @@ int main()
 	}
 
     graph.printGraph();
-    //Heuristics h;
-   //h.Astar(graph,nodes.at(0),nodes.at(9));
+    Heuristics h;
+    h.Astar(graph,nodes.at(0),nodes.at(9));
     /*for (int i = 0; i < dataEdges.size(); ++i)
     {
         Edge edge(&nodes[dataEdges[i][0]-1],&nodes[dataEdges[i][1]-1]);
