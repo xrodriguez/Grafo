@@ -15,7 +15,7 @@ using namespace std;
 using namespace sf;
 
 
-void draw(Graph graph){
+void draw(Graph graph ,list<Node> shortestPath ){
             // Create the main window
     int height = 1000 , width = 1000;
     sf::RenderWindow window(sf::VideoMode(width,height), "Grafo");
@@ -29,6 +29,15 @@ void draw(Graph graph){
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+            
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left)
+                {
+                    std::cout << "the right button was pressed" << std::endl;
+                    std::cout << "mouse x: " << event.mouseButton.x << std::endl;
+                    std::cout << "mouse y: " << event.mouseButton.y << std::endl;
+                }
+            }
         }
 
         window.clear();
@@ -39,27 +48,38 @@ void draw(Graph graph){
             CircleShape shape(2.f);
             shape.setFillColor(sf::Color::Green);
             //shape.setFillColor(sf::Color(255,0,0));
-            Vector2i coordenates = window.mapCoordsToPixel(sf::Vector2f(node->x,node->y));
-            shape.setPosition( ( coordenates.x/(width))-8200, coordenates.y/(height) +200);
+            //Vector2i coordenates = window.mapCoordsToPixel(Vector2f(node->x,node->y));
+            shape.setPosition(node->getX(width,-8200),node->getY(width,200));
             window.draw(shape);
             // print text
             Text text(to_string(node->tag), font);
             text.setCharacterSize(15);
             text.setStyle(Text::Bold);
             text.setColor(Color::Red);
-            text.setPosition( (coordenates.x/(width))-8200, coordenates.y/(height) +200);
+            text.setPosition(node->getX(width,-8200),node->getY(width,200));
             window.draw(text);
         }
         //edges 
         for (auto edge=graph.edges.begin(); edge!=graph.edges.end(); edge++){
             //cout << edge->start->x << " " << edge->end->x << endl;
-            sf::VertexArray lines(Lines, 4);
-            lines[0].position = Vector2f((edge->start->x/(width))-8200, edge->start->y/(height) +200);
-            lines[1].position = Vector2f((edge->end->x/(width))-8200, edge->end->y/(height) +200);
+            sf::VertexArray lines(Lines, 2);
+            lines[0].position = Vector2f(edge->start->getX(width,-8200),edge->start->getY(width,200));
+            lines[1].position = Vector2f(edge->end->getX(width,-8200),edge->end->getY(width,200));
             window.draw(lines);
 
         }
 
+        for (auto node=shortestPath.begin(); node!=shortestPath.end(); node++) {
+            auto nextNode = next(node,1);
+            if(nextNode != shortestPath.end() ){
+                VertexArray lines(Lines,2);
+                lines[0].color = Color::Blue;
+                lines[0].position = Vector2f(node->getX(width,-8200),node->getY(width,200));
+                lines[1].position = Vector2f(nextNode->getX(width,-8200),nextNode->getY(width,200));
+                lines[1].color = Color::Blue;
+                window.draw(lines);            
+            }
+        }
         window.display();
     }
 }
@@ -189,7 +209,12 @@ int main()
     // g.addEdge(7, 8, 7);
  
     //g.shortestPath(0);
-    draw(graph);
+    list<Node> shortestPath ;
+    shortestPath.push_back(nodes.at(0));
+    shortestPath.push_back(nodes.at(1));
+    shortestPath.push_back(nodes.at(2));
+    shortestPath.push_back(nodes.at(3));
+    draw(graph,shortestPath);
 
 
  
