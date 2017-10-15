@@ -5,7 +5,7 @@
 #include "Node.h"
 
 #include <list>
-
+#include <vector>
 using namespace std;
 
 Heuristics::Heuristics(){};
@@ -85,7 +85,7 @@ bool findNode(set<Node,bool (*)(const Node&, const Node&)> list , Node node){
 }
 
 
-void  Heuristics::Astar(Graph graph , Node start,Node end){
+vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
 	
 	//set<Node> openList;
 	cout<<  "NODOS: " <<start.tag<<" - "<<end.tag<<endl;
@@ -94,7 +94,7 @@ void  Heuristics::Astar(Graph graph , Node start,Node end){
    	set<Node, bool (*)(const Node&, const Node&) > closedList(compareNode);
    	vector<pair<Node,Node>> cameFrom;
    	set<Node, bool (*)(const Node&, const Node&) > tmpList(compareNode);
-
+   	vector<Node> listRuta;
 	//openList.insert(start);
 	//start.f = 0 ;
 	start.g = 0 ;
@@ -108,13 +108,13 @@ void  Heuristics::Astar(Graph graph , Node start,Node end){
 		Node current = *openList.begin();
 		//cout<<"start :  "<<start.g<<endl;
 		//cout<<"current :  "<<current.g<<endl;
-        if(current.compare(end)) {cout <<"Ruta:::::::::::::::::::::::::::::::::::::::::::::::::::::: "<< tmpList.size() << endl ;cout<<"FIN"<<endl; return;}
+        if(current.compare(end)) {cout <<"Ruta:::::::::::::::::::::::::::::::::::::::::::::::::::::: "<< listRuta.size() << endl ;cout<<"FIN"<<endl; return listRuta;}
         //cout<<"Paso1...... "<<endl;
         openList.erase(openList.begin());
         closedList.insert(current);
 
 		list<Node> successors = graph.getSuccessors(current);
-		cout<<"size og nodo: "<<current.tag+1<<   " size: " <<successors.size() <<endl;
+		cout<<"                 nodo: "<<current.tag+1<<   " size: " <<successors.size() <<endl;
 		for (auto successor = successors.begin(); successor !=successors.end(); successor++){
 			//cout<<"Paso2.............."<<endl;
 
@@ -145,13 +145,32 @@ void  Heuristics::Astar(Graph graph , Node start,Node end){
 				cout<<"Second continue...."<< tentative_g << " <> "<<(*successor).g<<endl;
                 continue;
 			}
+			cout<<"INSERRRRRRRRRRRRRRRRR"<<endl;
 			tmpList.insert(*successor);
+			listRuta.push_back(*successor);
 			//cout<<"INSERT NEW PATH........................................................."<<endl;
 			(*successor).g = tentative_g;
-			
+
 
 
 			(*successor).f = (*successor).g + calculateDistance(*successor,end);
+
+
+			for (auto it = openList.begin(); it !=openList.end(); it++){	
+				if((*successor).compare(*it)) {
+					openList.erase(openList.begin());
+        			openList.insert( (*successor) );
+					cout<<"CHANGE VALUE"  << endl;
+					//return true;
+				}
+			}
+
+
+			cout<<"VALOR queue: "<< (*openList.begin()).g << endl;
+			cout<<"VALOR neighbor: "<<(*successor).g<<endl;
+
+
+
 
 			//gScore[neighbor] := tentative_gScore
             //fScore[neighbor] := gScore[neighbor] + heuristic_cost_estimate(neighbor, goal)
@@ -175,11 +194,11 @@ void  Heuristics::Astar(Graph graph , Node start,Node end){
    //        	(*successor).f = (*successor).g + calculateDistance(*successor,end);
         }
 
-        if(k==4) break;
+        //if(k==4) break;
 
 	}
 	cout <<"Ruta:::::::::::::::::::::::::::::::::::::::::::::::::::::: "<< tmpList.size() << endl ;
-	return; 	
+	return listRuta; 	
 }
 
 
