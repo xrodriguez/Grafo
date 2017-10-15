@@ -12,32 +12,16 @@
 #include "Edge.h"
 
 using namespace std;
+using namespace sf;
 
 
-void draw(int numberNodes,vector<Node> nodes){
+void draw(Graph graph){
             // Create the main window
     int height = 1000 , width = 1000;
     sf::RenderWindow window(sf::VideoMode(width,height), "Grafo");
     
     vector<sf::CircleShape> shapes ;
     
-
-    for (int i = 0; i < numberNodes; ++i){
-        sf::CircleShape shape(1.f);
-
-        shape.setFillColor(sf::Color::Green);
-        //shape.setFillColor(sf::Color(255,0,0));
-        sf::Vector2i v2;
-        v2 = window.mapCoordsToPixel(sf::Vector2f(nodes.at(i).x,nodes.at(i).y));
-        shape.setPosition( ( v2.x/(width))-8200, v2.y/(height) +200);
-        shapes.push_back(shape);
-    }
-
-
-
-
-
-
     while (window.isOpen())
     {
         sf::Event event;
@@ -50,18 +34,31 @@ void draw(int numberNodes,vector<Node> nodes){
         window.clear();
         sf::Font font;
         font.loadFromFile("arial.ttf");
-        for (int i = 0; i < shapes.size(); ++i){
-            window.draw(shapes.at(i));
-            sf::Text text(to_string(i), font);
+        //nodes
+        for (auto node=graph.nodes.begin(); node!=graph.nodes.end(); node++){
+            CircleShape shape(2.f);
+            shape.setFillColor(sf::Color::Green);
+            //shape.setFillColor(sf::Color(255,0,0));
+            Vector2i coordenates = window.mapCoordsToPixel(sf::Vector2f(node->x,node->y));
+            shape.setPosition( ( coordenates.x/(width))-8200, coordenates.y/(height) +200);
+            window.draw(shape);
+            // print text
+            Text text(to_string(node->tag), font);
             text.setCharacterSize(15);
-            text.setStyle(sf::Text::Bold);
-            text.setColor(sf::Color::Red);
-            text.setPosition(shapes.at(i).getPosition());
+            text.setStyle(Text::Bold);
+            text.setColor(Color::Red);
+            text.setPosition( (coordenates.x/(width))-8200, coordenates.y/(height) +200);
             window.draw(text);
         }
-     // Declare and load a font
-// Create a text
-// Draw it
+        //edges 
+        for (auto edge=graph.edges.begin(); edge!=graph.edges.end(); edge++){
+            //cout << edge->start->x << " " << edge->end->x << endl;
+            sf::VertexArray lines(Lines, 4);
+            lines[0].position = Vector2f((edge->start->x/(width))-8200, edge->start->y/(height) +200);
+            lines[1].position = Vector2f((edge->end->x/(width))-8200, edge->end->y/(height) +200);
+            window.draw(lines);
+
+        }
 
         window.display();
     }
@@ -138,19 +135,20 @@ int main()
 
     vector<Node> nodes ;
     
-    Graph graph(numberNodes);
-	//read node from file
-	ifstream readNode("listNode.txt");	//open the file
-	if(!readNode){
-		std::cout<<"Not FILE"<<std::endl;//file doesn't exist
-	}
-	char tmp;
-	float x,y,t;
-	int i=0;
-	while(readNode >> t>>tmp>>x>>tmp>>y){
+    //read node from file
+    ifstream readNode("listNode.txt");  //open the file
+    if(!readNode){
+        std::cout<<"Not FILE"<<std::endl;//file doesn't exist
+    }
+    char tmp;
+    float x,y,t;
+    int i=0;
+    while(readNode >> t>>tmp>>x>>tmp>>y){
         nodes.push_back(Node(x,y,i));
-		i++;
-	}
+        i++;
+    }
+
+    Graph graph(nodes);
 
 	//read Edge from file
 	ifstream readEdge("listEdge.txt");	//open the file
@@ -191,7 +189,7 @@ int main()
     // g.addEdge(7, 8, 7);
  
     //g.shortestPath(0);
-    draw(numberNodes,nodes);
+    draw(graph);
 
 
  
