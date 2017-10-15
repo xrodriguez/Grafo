@@ -50,10 +50,15 @@ void draw(Graph graph){
             text.setPosition( (coordenates.x/(width))-8200, coordenates.y/(height) +200);
             window.draw(text);
         }
-        //cout << graph.edges.size() << endl; 
-        //for (auto edge=graph.edges.begin(); edge!=graph.edges.end(); edge++){
-        //    cout << edge->start->x << " " << edge->end->x << endl;
-        //}
+        //edges 
+        for (auto edge=graph.edges.begin(); edge!=graph.edges.end(); edge++){
+            //cout << edge->start->x << " " << edge->end->x << endl;
+            sf::VertexArray lines(Lines, 4);
+            lines[0].position = Vector2f((edge->start->x/(width))-8200, edge->start->y/(height) +200);
+            lines[1].position = Vector2f((edge->end->x/(width))-8200, edge->end->y/(height) +200);
+            window.draw(lines);
+
+        }
 
         window.display();
     }
