@@ -6,6 +6,8 @@
 
 #include <list>
 #include <vector>
+#include <map>
+
 using namespace std;
 
 Heuristics::Heuristics(){};
@@ -89,20 +91,19 @@ bool haveEdge(int a, int b){
 	return true;
 }
 
-vector<Node> reconstruct_path( vector<Node> listRuta ,Node current  ){
+vector<Node> reconstruct_path( map<int, Node> cameFrom ,Node current  ){
 	vector<Node> path;
 
 	path.push_back(current);
+	int i=0;
+	while(  ! (cameFrom.find(current.tag) == cameFrom.end() ) ){
+		//cout<<"FIND"<<endl;i++;if(i==2)break;
+		current = cameFrom[current.tag];
+		path.push_back(current);
 
-	for (int i = listRuta.size() -1; i > 0; --i)
-	{
-		if(  haveEdge(   listRuta[i -1].tag , path.begin()   )  ){
-			current = listRuta[i-1];
-			path.push_back( current );			
-		}
 	}
 
-
+	return path;
 
 }
 
@@ -118,6 +119,10 @@ vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
    	vector<pair<Node,Node>> cameFrom;
    	set<Node, bool (*)(const Node&, const Node&) > tmpList(compareNode);
    	vector<Node> listRuta;
+
+   	map<int, Node> map_node;
+
+
 	//openList.insert(start);
 	//start.f = 0 ;
 	start.g = 0 ;
@@ -135,8 +140,16 @@ vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
         	for(int i=0; i<listRuta.size(); i++){
         		cout<<"   ->  " << listRuta[i].tag << " "<<endl;
         	}
-        	cout <<"Ruta:::::::::::::::::::::::::::::::::::::::::::::::::::::: "<< listRuta.size() << endl ;cout<<"FIN"<<endl; return listRuta;
 
+        	cout <<"Ruta:::::::::::::::::::::::::::::::::::::::::::::::::::::: "<< listRuta.size() << endl ;cout<<"FIN"<<endl; 
+
+        	vector<Node> v = reconstruct_path(map_node,current);
+        	for(int i=0; i<v.size(); i++){
+        		cout<<"   ->  " << v[i].tag << " "<<endl;
+        	}
+
+        	return reconstruct_path(map_node,current);
+        	//return listRuta;
         }
         //cout<<"Paso1...... "<<endl;
         openList.erase(openList.begin());
@@ -177,6 +190,9 @@ vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
 			cout<<"INSERRRRRRRRRRRRRRRRR"<<endl;
 			tmpList.insert(*successor);
 			listRuta.push_back(*successor);
+
+			map_node[(*successor).tag] = current;
+
 			//cout<<"INSERT NEW PATH........................................................."<<endl;
 			(*successor).g = tentative_g;
 
