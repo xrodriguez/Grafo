@@ -17,8 +17,8 @@ class Graph
         list<pair<Node *,double>> *adjacenseList;
 
     public:
-        Graph(vector<Node> nodes);
-        void addEdge(Edge edge);
+        Graph(vector<Node> nodes,vector<Edge> edges);
+        //void addEdge(Edge edge);
         void printGraph();
         vector<Node> getNodes();
         vector<Edge> getEdges();

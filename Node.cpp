@@ -17,11 +17,11 @@ Node::Node(double x , double y, int tag){
 
 
 double Node::getX(int scale,int translate){
-    return (this->x/scale)+translate;
+    return this->x ;//(this->x/scale)+translate;
 }
 
 double Node::getY(int scale,int translate){
-    return (this->y/scale)+translate;
+    return this->y ;//(this->y/scale)+translate;
 }
 
 
