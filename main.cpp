@@ -21,9 +21,12 @@ void draw(Graph graph ,vector<Node> shortestPath ){
     sf::RenderWindow window(sf::VideoMode(width,height), "Grafo");
     
     vector<sf::CircleShape> shapes ;
+    Font font;
+    font.loadFromFile("arial.ttf");
     
     while (window.isOpen())
     {
+        //window.clear();
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -33,16 +36,23 @@ void draw(Graph graph ,vector<Node> shortestPath ){
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    std::cout << "the right button was pressed" << std::endl;
-                    std::cout << "mouse x: " << event.mouseButton.x << std::endl;
-                    std::cout << "mouse y: " << event.mouseButton.y << std::endl;
+                    //std::cout << "the right button was pressed" << std::endl;
+                    //std::cout << "mouse x: " << event.mouseButton.x << std::endl;
+                    //std::cout << "mouse y: " << event.mouseButton.y << std::endl;
+                    vector<Node> nearNodes = graph.getNodesByPoint((event.mouseButton.x+8200)*width,(event.mouseButton.y-200)*width);
+                    if(!nearNodes.empty()){
+                        cout<< nearNodes.size() << endl;
+                        Text text(to_string((nearNodes[0]).tag), font);
+                        text.setCharacterSize(15);
+                        text.setStyle(Text::Bold);
+                        text.setColor(Color::Red);
+                        text.setPosition((nearNodes[0]).getX(width,-8200),(nearNodes[0]).getY(width,200));
+                        window.draw(text);
+                    }
                 }
             }
         }
 
-        window.clear();
-        sf::Font font;
-        font.loadFromFile("arial.ttf");
         //nodes
         for (auto node=graph.nodes.begin(); node!=graph.nodes.end(); node++){
             CircleShape shape(2.f);
@@ -52,12 +62,7 @@ void draw(Graph graph ,vector<Node> shortestPath ){
             shape.setPosition(node->getX(width,-8200),node->getY(width,200));
             window.draw(shape);
             // print text
-            Text text(to_string(node->tag), font);
-            text.setCharacterSize(15);
-            text.setStyle(Text::Bold);
-            text.setColor(Color::Red);
-            text.setPosition(node->getX(width,-8200),node->getY(width,200));
-            window.draw(text);
+
         }
         //edges 
         for (auto edge=graph.edges.begin(); edge!=graph.edges.end(); edge++){
@@ -69,8 +74,8 @@ void draw(Graph graph ,vector<Node> shortestPath ){
 
         }
 
-        for (auto node=shortestPath.begin(); node!=shortestPath.end(); node++) {
-            cout << node->tag << endl;
+        //for (auto node=shortestPath.begin(); node!=shortestPath.end(); node++) {
+            //cout << node->tag << endl;
             // auto nextNode = next(node,1);
             // if(nextNode != shortestPath.end() ){
             //     VertexArray lines(Lines,2);
@@ -80,7 +85,7 @@ void draw(Graph graph ,vector<Node> shortestPath ){
             //     lines[1].color = Color::Blue;
             //     window.draw(lines);            
             // }
-        }
+        //}
         window.display();
     }
 }

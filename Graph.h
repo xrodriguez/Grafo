@@ -23,6 +23,7 @@ class Graph
         vector<Node> getNodes();
         vector<Edge> getEdges();
         list<Node> getSuccessors(Node node);
+        vector<Node> getNodesByPoint(double x , double y);
         ~Graph();
 
     
