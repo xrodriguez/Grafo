@@ -23,6 +23,7 @@ void draw(Graph graph ,vector<Node> shortestPath ){
     vector<sf::CircleShape> shapes ;
     Font font;
     font.loadFromFile("arial.ttf");
+    vector<Node> limits;
     
     while (window.isOpen())
     {
@@ -36,27 +37,26 @@ void draw(Graph graph ,vector<Node> shortestPath ){
                 window.clear();
                 deltaWidth = event.size.width-width;
                 deltaHeight = event.size.height-height;
-                std::cout << "new width: " << event.size.width << std::endl;
-                std::cout << "new height: " << event.size.height << std::endl;
+                //std::cout << "new width: " << event.size.width << std::endl;
+                //std::cout << "new height: " << event.size.height << std::endl;
             }
                 
             if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left)
-                {
+                if (event.mouseButton.button == sf::Mouse::Left){
                     //std::cout << "the right button was pressed" << std::endl;
-                    std::cout << "mouse x: " << event.mouseButton.x << std::endl;
-                    std::cout << "mouse y: " << event.mouseButton.y << std::endl;
+                    //std::cout << "mouse x: " << event.mouseButton.x << std::endl;
+                    //std::cout << "mouse y: " << event.mouseButton.y << std::endl;
                     int x = event.mouseButton.x ;
                     x = (x*width)/(width+deltaWidth) ;
                     int y = event.mouseButton.y ;
                     y = (y*height)/(height+deltaHeight) ;
-                    std::cout << "dx: " << deltaWidth << std::endl;
-                    std::cout << "mouse x-d: " << x << std::endl;
-                    std::cout << "mouse y-d: " << y << std::endl;
+                    //std::cout << "dx: " << deltaWidth << std::endl;
+                    //std::cout << "mouse x-d: " << x << std::endl;
+                    //std::cout << "mouse y-d: " << y << std::endl;
                     
                     vector<Node> nearNodes = graph.getNodesByPoint(x,y);
                     if(!nearNodes.empty()){
-                        cout<< nearNodes.size() << endl;
+                        //cout<< nearNodes.size() << endl;
                         Text text(to_string((nearNodes[0]).tag), font);
                         text.setCharacterSize(15);
                         text.setStyle(Text::Bold);
@@ -64,11 +64,27 @@ void draw(Graph graph ,vector<Node> shortestPath ){
                         //text.setPosition((nearNodes[0]).getX(width,-8200),(nearNodes[0]).getY(width,200));
                         text.setPosition(nearNodes[0].x,nearNodes[0].y);
                         window.draw(text);
+                        //if(limits.size() < 2 ) {
+                        //}
+                        limits.push_back(nearNodes[0]);
+                        if(limits.size() == 2) {
+                            //limits.erase(limits.begin());
+                            //limits.push_back(nearNodes[0]);
+                            cout << "DESDE : " << (limits[0]).tag << "HASTA: " << (limits[1]).tag << endl;
+                        }else if(limits.size() > 2) {
+                            window.clear();
+                            limits.clear();
+                        }
+                        cout<<limits.size() << endl;
                     }
+                }else if (event.mouseButton.button == sf::Mouse::Right){
+                    window.clear();
+                    limits.clear();
                 }
             }
         }
 
+        
         //nodes
         for (auto node=graph.nodes.begin(); node!=graph.nodes.end(); node++){
             CircleShape shape(2.f);
@@ -180,7 +196,7 @@ int main()
     vector<Node> nodes ;
     vector<Edge> edges ;
     string line;
-    ifstream file("data/Graphs/10000points.data");  //open the file
+    ifstream file("data/Graphs/100points.data");  //open the file
     if (file.is_open()){
         int i = 0 , numberNodes;
         while(getline (file,line)){
@@ -209,7 +225,7 @@ int main()
     Graph graph(nodes,edges);
     graph.printGraph();
     vector<Node> shortestPath; 
-     Heuristics h;
+    Heuristics h;
 
     //vector<Node> shortestPath = h.Astar(graph,nodes.at(0),nodes.at(10));
 
