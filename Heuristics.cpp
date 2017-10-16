@@ -143,10 +143,10 @@ vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
 
         	cout <<"Ruta:::::::::::::::::::::::::::::::::::::::::::::::::::::: "<< listRuta.size() << endl ;cout<<"FIN"<<endl; 
 
-        	vector<Node> v = reconstruct_path(map_node,current);
+        	/*vector<Node> v = reconstruct_path(map_node,current);
         	for(int i=0; i<v.size(); i++){
         		cout<<"   ->  " << v[i].tag << " "<<endl;
-        	}
+        	}*/
 
         	return reconstruct_path(map_node,current);
         	//return listRuta;

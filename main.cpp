@@ -162,76 +162,39 @@ void draw(Graph graph ,vector<Node> shortestPath ){
 int main()
 {
     // create the graph given in above fugure
-    //int numberNodes;
+    int numberNodes = 10;
+
     vector<Node> nodes ;
-    vector<Edge> edges ;
-    string line;
-    ifstream file("data/Graphs/1000points.data");  //open the file
-    if (file.is_open()){
-        int i = 0 , numberNodes;
-        while(getline (file,line)){
-            vector<string> result;
-            istringstream iss(line);
-            for(std::string line; iss >> line; )
-                result.push_back(line);
-            if(i == 0 ){
-                numberNodes = stoi(result[1]);
-            }else if( i < numberNodes+1){
-                nodes.push_back(Node(stoi(result[0]),stoi(result[1]),i-1));                
-            }else if(i == numberNodes+1 ){
-                int numberEdges = stoi(result[1]);
-            }else{
-                 edges.push_back(Edge(&nodes[stoi(result[0])],&nodes[stoi(result[1])]));
-            }
-            i++;
-        }
-        file.close();
-    }
-    else { 
-        cout << "Unable to open file";
-    }
-    cout << nodes.size()<< endl;
-    cout << edges.size()<< endl;
-    Graph graph(nodes,edges);
-    graph.printGraph();
-    vector<Node> shortestPath; 
-    //= h.Astar(graph,nodes.at(0),nodes.at(9)); ;
-    // shortestPath.push_back(nodes.at(0));
-    // shortestPath.push_back(nodes.at(1));
-    // shortestPath.push_back(nodes.at(2));
-    // shortestPath.push_back(nodes.at(3));
-    draw(graph,shortestPath);
-
-
+    
     //read node from file
- //    ifstream readNode("listNode.txt");  //open the file
- //    if(!readNode){
- //        std::cout<<"Not FILE"<<std::endl;//file doesn't exist
- //    }
- //    char tmp;
- //    float x,y,t;
- //    int i=0;
- //    while(readNode >> t>>tmp>>x>>tmp>>y){
- //        nodes.push_back(Node(x,y,i));
- //        i++;
- //    }
+    ifstream readNode("listNode.txt");  //open the file
+    if(!readNode){
+        std::cout<<"Not FILE"<<std::endl;//file doesn't exist
+    }
+    char tmp;
+    float x,y,t;
+    int i=0;
+    while(readNode >> t>>tmp>>x>>tmp>>y){
+        nodes.push_back(Node(x,y,i));
+        i++;
+    }
 
- //    Graph graph(nodes);
+    Graph graph(nodes);
 
-	// //read Edge from file
-	// ifstream readEdge("listEdge.txt");	//open the file
-	// if(!readEdge){
-	// 	std::cout<<"Not FILE"<<std::endl;//file doesn't exist
-	// }
+	//read Edge from file
+	ifstream readEdge("listEdge.txt");	//open the file
+	if(!readEdge){
+		std::cout<<"Not FILE"<<std::endl;//file doesn't exist
+	}
 
-	// i=0;
- //    while(readEdge >> x>>tmp>>y){
- //        graph.addEdge(Edge(&nodes[x],&nodes[y]));
-	// 	i++;
-	// }
+	i=0;
+    while(readEdge >> x>>tmp>>y){
+        graph.addEdge(Edge(&nodes[x],&nodes[y]));
+		i++;
+	}
 
- //    graph.printGraph();
- //    Heuristics h;
+    graph.printGraph();
+    Heuristics h;
     
     /*for (int i = 0; i < dataEdges.size(); ++i)
     {
@@ -257,12 +220,12 @@ int main()
     // g.addEdge(7, 8, 7);
  
     //g.shortestPath(0);
-    //vector<Node> shortestPath = h.Astar(graph,nodes.at(0),nodes.at(9)); ;
+    vector<Node> shortestPath = h.Astar(graph,nodes.at(0),nodes.at(9)); ;
     // shortestPath.push_back(nodes.at(0));
     // shortestPath.push_back(nodes.at(1));
     // shortestPath.push_back(nodes.at(2));
     // shortestPath.push_back(nodes.at(3));
-    //draw(graph,shortestPath);
+    draw(graph,shortestPath);
 
 
  
