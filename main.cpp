@@ -26,19 +26,24 @@ void draw(Graph graph ,vector<Node> shortestPath ){
     
     while (window.isOpen())
     {
-        //window.clear();
         sf::Event event;
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
                 window.close();
             
+            if (event.type == sf::Event::Resized){
+                window.clear();
+                std::cout << "new width: " << event.size.width << std::endl;
+                std::cout << "new height: " << event.size.height << std::endl;
+            }
+                
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
                     //std::cout << "the right button was pressed" << std::endl;
-                    //std::cout << "mouse x: " << event.mouseButton.x << std::endl;
-                    //std::cout << "mouse y: " << event.mouseButton.y << std::endl;
+                    std::cout << "mouse x: " << event.mouseButton.x << std::endl;
+                    std::cout << "mouse y: " << event.mouseButton.y << std::endl;
                     vector<Node> nearNodes = graph.getNodesByPoint((event.mouseButton.x+8200)*width,(event.mouseButton.y-200)*width);
                     if(!nearNodes.empty()){
                         cout<< nearNodes.size() << endl;
