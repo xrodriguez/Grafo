@@ -85,6 +85,29 @@ bool findNode(set<Node,bool (*)(const Node&, const Node&)> list , Node node){
 }
 
 
+bool haveEdge(int a, int b){
+	return true;
+}
+
+vector<Node> reconstruct_path( vector<Node> listRuta ,Node current  ){
+	vector<Node> path;
+
+	path.push_back(current);
+
+	for (int i = listRuta.size() -1; i > 0; --i)
+	{
+		if(  haveEdge(   listRuta[i -1].tag , path.begin()   )  ){
+			current = listRuta[i-1];
+			path.push_back( current );			
+		}
+	}
+
+
+
+}
+
+
+
 vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
 	
 	//set<Node> openList;
@@ -110,7 +133,7 @@ vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
 		//cout<<"current :  "<<current.g<<endl;
         if(current.compare(end)) {
         	for(int i=0; i<listRuta.size(); i++){
-        		cout<<"   ->  " << listRuta[i]<< " "<<endl;
+        		cout<<"   ->  " << listRuta[i].tag << " "<<endl;
         	}
         	cout <<"Ruta:::::::::::::::::::::::::::::::::::::::::::::::::::::: "<< listRuta.size() << endl ;cout<<"FIN"<<endl; return listRuta;
 
@@ -126,7 +149,7 @@ vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
 
 			//double new_cost = current.g +  calculateDistance(*successor,current);
 			if( findNode(closedList,*successor) ){
-				cout<<"continue...."<<endl;
+				cout<<"continue.... "<< (*successor).tag<<endl;
 				continue;
 			}
 
@@ -163,10 +186,11 @@ vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
 
 
 			for (auto it = openList.begin(); it !=openList.end(); it++){	
-				if((*successor).compare(*it)) {
-					openList.erase(openList.begin());
+				if((*successor).tag == (*it).tag ) {
+					cout<<"CHANGE VALUE: "  <<  (*openList.begin()).tag << endl;
+					openList.erase(*it);
         			openList.insert( (*successor) );
-					cout<<"CHANGE VALUE"  << endl;
+					
 					//return true;
 				}
 			}
