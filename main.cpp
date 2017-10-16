@@ -17,7 +17,7 @@ using namespace sf;
 
 void draw(Graph graph ,vector<Node> shortestPath ){
             // Create the main window
-    int height = 1000 , width = 1000;
+    int height = 1000 , width = 1000 , deltaWidth = 0 , deltaHeight = 0 ;
     sf::RenderWindow window(sf::VideoMode(width,height), "Grafo");
     
     vector<sf::CircleShape> shapes ;
@@ -34,6 +34,8 @@ void draw(Graph graph ,vector<Node> shortestPath ){
             
             if (event.type == sf::Event::Resized){
                 window.clear();
+                deltaWidth = event.size.width-width;
+                deltaHeight = event.size.height-height;
                 std::cout << "new width: " << event.size.width << std::endl;
                 std::cout << "new height: " << event.size.height << std::endl;
             }
@@ -44,14 +46,23 @@ void draw(Graph graph ,vector<Node> shortestPath ){
                     //std::cout << "the right button was pressed" << std::endl;
                     std::cout << "mouse x: " << event.mouseButton.x << std::endl;
                     std::cout << "mouse y: " << event.mouseButton.y << std::endl;
-                    vector<Node> nearNodes = graph.getNodesByPoint((event.mouseButton.x+8200)*width,(event.mouseButton.y-200)*width);
+                    int x = event.mouseButton.x ;
+                    x = (x*width)/(width+deltaWidth) ;
+                    int y = event.mouseButton.y ;
+                    y = (y*height)/(height+deltaHeight) ;
+                    std::cout << "dx: " << deltaWidth << std::endl;
+                    std::cout << "mouse x-d: " << x << std::endl;
+                    std::cout << "mouse y-d: " << y << std::endl;
+                    
+                    vector<Node> nearNodes = graph.getNodesByPoint(x,y);
                     if(!nearNodes.empty()){
                         cout<< nearNodes.size() << endl;
                         Text text(to_string((nearNodes[0]).tag), font);
                         text.setCharacterSize(15);
                         text.setStyle(Text::Bold);
                         text.setColor(Color::Red);
-                        text.setPosition((nearNodes[0]).getX(width,-8200),(nearNodes[0]).getY(width,200));
+                        //text.setPosition((nearNodes[0]).getX(width,-8200),(nearNodes[0]).getY(width,200));
+                        text.setPosition(nearNodes[0].x,nearNodes[0].y);
                         window.draw(text);
                     }
                 }
@@ -64,7 +75,8 @@ void draw(Graph graph ,vector<Node> shortestPath ){
             shape.setFillColor(sf::Color::Green);
             //shape.setFillColor(sf::Color(255,0,0));
             //Vector2i coordenates = window.mapCoordsToPixel(Vector2f(node->x,node->y));
-            shape.setPosition(node->getX(width,-8200),node->getY(width,200));
+            //shape.setPosition(node->getX(width,-8200),node->getY(width,200));
+            shape.setPosition(node->x,node->y);
             window.draw(shape);
             // print text
 
@@ -73,8 +85,10 @@ void draw(Graph graph ,vector<Node> shortestPath ){
         for (auto edge=graph.edges.begin(); edge!=graph.edges.end(); edge++){
             //cout << edge->start->x << " " << edge->end->x << endl;
             sf::VertexArray lines(Lines, 2);
-            lines[0].position = Vector2f(edge->start->getX(width,-8200),edge->start->getY(width,200));
-            lines[1].position = Vector2f(edge->end->getX(width,-8200),edge->end->getY(width,200));
+            //lines[0].position = Vector2f(edge->start->getX(width,-8200),edge->start->getY(width,200));
+            lines[0].position = Vector2f(edge->start->x,edge->start->y);
+            //lines[1].position = Vector2f(edge->end->getX(width,-8200),edge->end->getY(width,200));
+            lines[1].position = Vector2f(edge->end->x,edge->end->y);
             window.draw(lines);
 
         }
@@ -166,7 +180,7 @@ int main()
     vector<Node> nodes ;
     vector<Edge> edges ;
     string line;
-    ifstream file("data/Graphs/1000points.data");  //open the file
+    ifstream file("data/Graphs/10000points.data");  //open the file
     if (file.is_open()){
         int i = 0 , numberNodes;
         while(getline (file,line)){
@@ -195,6 +209,10 @@ int main()
     Graph graph(nodes,edges);
     graph.printGraph();
     vector<Node> shortestPath; 
+     Heuristics h;
+
+    //vector<Node> shortestPath = h.Astar(graph,nodes.at(0),nodes.at(10));
+
     //= h.Astar(graph,nodes.at(0),nodes.at(9)); ;
     // shortestPath.push_back(nodes.at(0));
     // shortestPath.push_back(nodes.at(1));
@@ -203,68 +221,5 @@ int main()
     draw(graph,shortestPath);
 
 
-    //read node from file
- //    ifstream readNode("listNode.txt");  //open the file
- //    if(!readNode){
- //        std::cout<<"Not FILE"<<std::endl;//file doesn't exist
- //    }
- //    char tmp;
- //    float x,y,t;
- //    int i=0;
- //    while(readNode >> t>>tmp>>x>>tmp>>y){
- //        nodes.push_back(Node(x,y,i));
- //        i++;
- //    }
-
- //    Graph graph(nodes);
-
-	// //read Edge from file
-	// ifstream readEdge("listEdge.txt");	//open the file
-	// if(!readEdge){
-	// 	std::cout<<"Not FILE"<<std::endl;//file doesn't exist
-	// }
-
-	// i=0;
- //    while(readEdge >> x>>tmp>>y){
- //        graph.addEdge(Edge(&nodes[x],&nodes[y]));
-	// 	i++;
-	// }
-
- //    graph.printGraph();
- //    Heuristics h;
-    
-    /*for (int i = 0; i < dataEdges.size(); ++i)
-    {
-        Edge edge(&nodes[dataEdges[i][0]-1],&nodes[dataEdges[i][1]-1]);
-        //  making above shown graph
-        g.addEdge(edge);
-    }*/
-
-    //cout << nodeOne.x << endl;
-    //cout << edge.start->x << endl;
-    // g.addEdge(0, 7, 8);
-    // g.addEdge(1, 2, 8);
-    // g.addEdge(1, 7, 11);
-    // g.addEdge(2, 3, 7);
-    // g.addEdge(2, 8, 2);
-    // g.addEdge(2, 5, 4);
-    // g.addEdge(3, 4, 9);
-    // g.addEdge(3, 5, 14);
-    // g.addEdge(4, 5, 10);
-    // g.addEdge(5, 6, 2);
-    // g.addEdge(6, 7, 1);
-    // g.addEdge(6, 8, 6);
-    // g.addEdge(7, 8, 7);
- 
-    //g.shortestPath(0);
-    //vector<Node> shortestPath = h.Astar(graph,nodes.at(0),nodes.at(9)); ;
-    // shortestPath.push_back(nodes.at(0));
-    // shortestPath.push_back(nodes.at(1));
-    // shortestPath.push_back(nodes.at(2));
-    // shortestPath.push_back(nodes.at(3));
-    //draw(graph,shortestPath);
-
-
- 
     return 0;
 }
