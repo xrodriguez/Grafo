@@ -37,5 +37,19 @@ list<Node> Graph::getSuccessors(Node node){
 	return successors;
 }
 
+vector<Node> Graph::getNodesByPoint(double x , double y){
+    double radio = 3000 ;
+    vector<Node> nearNodes ;
+	//cout << x << " " << y << endl;
+    for (auto node=(this->nodes).begin(); node!= (this->nodes).end(); node++) {
+    	if( (node->x > x-radio and node->x < x+radio) 
+			and (node->y > y-radio and node->y < y+radio) ){
+			cout << "hola";
+			nearNodes.push_back(*node);
+		}
+    }
+    return nearNodes;
+}
+
 
 Graph::~Graph(){}
