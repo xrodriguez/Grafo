@@ -6,6 +6,8 @@
 
 #include <list>
 #include <vector>
+#include <map>
+
 using namespace std;
 
 Heuristics::Heuristics(){};
@@ -85,6 +87,28 @@ bool findNode(set<Node,bool (*)(const Node&, const Node&)> list , Node node){
 }
 
 
+bool haveEdge(int a, int b){
+	return true;
+}
+
+vector<Node> reconstruct_path( map<int, Node> cameFrom ,Node current  ){
+	vector<Node> path;
+
+	path.push_back(current);
+	int i=0;
+	while(  ! (cameFrom.find(current.tag) == cameFrom.end() ) ){
+		//cout<<"FIND"<<endl;i++;if(i==2)break;
+		current = cameFrom[current.tag];
+		path.push_back(current);
+
+	}
+
+	return path;
+
+}
+
+
+
 vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
 	
 	//set<Node> openList;
@@ -95,6 +119,10 @@ vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
    	vector<pair<Node,Node>> cameFrom;
    	set<Node, bool (*)(const Node&, const Node&) > tmpList(compareNode);
    	vector<Node> listRuta;
+
+   	map<int, Node> map_node;
+
+
 	//openList.insert(start);
 	//start.f = 0 ;
 	start.g = 0 ;
@@ -108,7 +136,21 @@ vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
 		Node current = *openList.begin();
 		//cout<<"start :  "<<start.g<<endl;
 		//cout<<"current :  "<<current.g<<endl;
-        if(current.compare(end)) {cout <<"Ruta:::::::::::::::::::::::::::::::::::::::::::::::::::::: "<< listRuta.size() << endl ;cout<<"FIN"<<endl; return listRuta;}
+        if(current.compare(end)) {
+        	for(int i=0; i<listRuta.size(); i++){
+        		cout<<"   ->  " << listRuta[i].tag << " "<<endl;
+        	}
+
+        	cout <<"Ruta:::::::::::::::::::::::::::::::::::::::::::::::::::::: "<< listRuta.size() << endl ;cout<<"FIN"<<endl; 
+
+        	vector<Node> v = reconstruct_path(map_node,current);
+        	for(int i=0; i<v.size(); i++){
+        		cout<<"   ->  " << v[i].tag << " "<<endl;
+        	}
+
+        	return reconstruct_path(map_node,current);
+        	//return listRuta;
+        }
         //cout<<"Paso1...... "<<endl;
         openList.erase(openList.begin());
         closedList.insert(current);
@@ -120,7 +162,7 @@ vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
 
 			//double new_cost = current.g +  calculateDistance(*successor,current);
 			if( findNode(closedList,*successor) ){
-				cout<<"continue...."<<endl;
+				cout<<"continue.... "<< (*successor).tag<<endl;
 				continue;
 			}
 
@@ -148,6 +190,9 @@ vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
 			cout<<"INSERRRRRRRRRRRRRRRRR"<<endl;
 			tmpList.insert(*successor);
 			listRuta.push_back(*successor);
+
+			map_node[(*successor).tag] = current;
+
 			//cout<<"INSERT NEW PATH........................................................."<<endl;
 			(*successor).g = tentative_g;
 
@@ -157,10 +202,11 @@ vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
 
 
 			for (auto it = openList.begin(); it !=openList.end(); it++){	
-				if((*successor).compare(*it)) {
-					openList.erase(openList.begin());
+				if((*successor).tag == (*it).tag ) {
+					cout<<"CHANGE VALUE: "  <<  (*openList.begin()).tag << endl;
+					openList.erase(*it);
         			openList.insert( (*successor) );
-					cout<<"CHANGE VALUE"  << endl;
+					
 					//return true;
 				}
 			}
