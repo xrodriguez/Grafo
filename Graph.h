@@ -22,7 +22,7 @@ class Graph
         void printGraph();
         vector<Node> getNodes();
         vector<Edge> getEdges();
-        list<Node> getSuccessors(Node node);
+        list<Node> getNeighbors(Node node);
         vector<Node> getNodesByPoint(double x , double y);
         ~Graph();
 

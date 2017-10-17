@@ -81,7 +81,8 @@ int calculateDistance(Node node1,Node node2){
 
 bool findNode(set<Node,bool (*)(const Node&, const Node&)> list , Node node){
 	for (auto it = list.begin(); it !=list.end(); it++){	
-		if(node.compare(*it)) return true;
+		//if(node.compare(*it)) return true;
+		if(node.tag==(*it).tag) return true;
 	}
 	return false;
 }
@@ -96,8 +97,18 @@ vector<Node> reconstruct_path( map<int, Node> cameFrom ,Node current  ){
 
 	path.push_back(current);
 	int i=0;
+	cout<<  "size of map:    " <<cameFrom.size() <<endl;
+	map<int, Node>::iterator iter ;
+	for ( iter = cameFrom.begin(); iter !=cameFrom.end(); ++iter)
+	{
+		std::cout << iter->first << " => " << iter->second.tag << '\n';
+	}
+
+
 	while(  ! (cameFrom.find(current.tag) == cameFrom.end() ) ){
 		//cout<<"FIND"<<endl;i++;if(i==2)break;
+		//i++;if(i==20) break;
+		cout<<"WHILE"<< current.tag <<endl;
 		current = cameFrom[current.tag];
 		path.push_back(current);
 
@@ -110,141 +121,122 @@ vector<Node> reconstruct_path( map<int, Node> cameFrom ,Node current  ){
 
 
 vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
-	
-	//set<Node> openList;
+	vector<Node> failure ;
+
 	cout<<  "NODOS: " <<start.tag<<" - "<<end.tag<<endl;
 	double tentative_g;
-   	set<Node, bool (*)(const Node&, const Node&) > openList(compareNode);
-   	set<Node, bool (*)(const Node&, const Node&) > closedList(compareNode);
-   	vector<pair<Node,Node>> cameFrom;
-   	set<Node, bool (*)(const Node&, const Node&) > tmpList(compareNode);
-   	vector<Node> listRuta;
+   	map<int,Node*> openMap;
+
+   	map<int,Node*> closedMap;
 
    	map<int, Node> map_node;
 
 
-	//openList.insert(start);
-	//start.f = 0 ;
 	start.g = 0 ;
-	openList.insert(start);
+	openMap[start.tag] = &start;
 	start.f = calculateDistance(start,end);
-	//cout<< "Heuristics"<<start.f<<endl;
 	int k=0;
-	while(!openList.empty()){
-		k++;
-		//cout<<"While"<<endl;
-		Node current = *openList.begin();
-		//cout<<"start :  "<<start.g<<endl;
-		//cout<<"current :  "<<current.g<<endl;
-        if(current.compare(end)) {
-        	for(int i=0; i<listRuta.size(); i++){
-        		cout<<"   ->  " << listRuta[i].tag << " "<<endl;
-        	}
+	///while(!openList.empty()){
+	while(!openMap.empty()){
+		k++;		
+		Node* _bestCandidate = NULL;
+		map<int,Node* >::iterator _it;
+		if (k==2)
+		{
+			//cout<< "kkk:  "<<openMap[5]->f<<endl;
+			//cout<< "kkk   "<<openMap[7]->f<<endl;
+			//cout<< "kkk   "<<openMap[0]->f<<endl;
+		}
 
-        	cout <<"Ruta:::::::::::::::::::::::::::::::::::::::::::::::::::::: "<< listRuta.size() << endl ;cout<<"FIN"<<endl; 
 
-        	/*vector<Node> v = reconstruct_path(map_node,current);
-        	for(int i=0; i<v.size(); i++){
-        		cout<<"   ->  " << v[i].tag << " "<<endl;
-        	}*/
 
-        	return reconstruct_path(map_node,current);
-        	//return listRuta;
+		for ( _it = openMap.begin(); _it != openMap.end(); ++_it )
+        {
+            Node* _toExplore_candidate = _it->second;
+            if ( _bestCandidate == NULL )
+            {
+            	_bestCandidate = _toExplore_candidate;
+            }
+            else if ( _toExplore_candidate->f < _bestCandidate->f )
+            {
+                	_bestCandidate = _toExplore_candidate;
+            }
         }
-        //cout<<"Paso1...... "<<endl;
-        openList.erase(openList.begin());
-        closedList.insert(current);
 
-		list<Node> successors = graph.getSuccessors(current);
-		cout<<"                 nodo: "<<current.tag<<   " size: " <<successors.size() <<endl;
-		for (auto successor = successors.begin(); successor !=successors.end(); successor++){
-			//cout<<"Paso2.............."<<endl;
+        Node current = *(_bestCandidate);
 
-			//double new_cost = current.g +  calculateDistance(*successor,current);
-			if( findNode(closedList,*successor) ){
-				cout<<"continue.... "<< (*successor).tag<<endl;
-				continue;
+        //Node* _nextToExplore = _bestCandidate;
+        openMap.erase( current.tag );
+        closedMap[current.tag] = &current;
+
+        map<int, Node>::iterator iter ;
+		for ( iter = map_node.begin(); iter !=map_node.end(); ++iter)
+		{
+			std::cout << iter->first << " => " << iter->second.tag << '\n';
+		}
+
+
+        //if(current.compare(end)) {
+        if(current.tag == end.tag) {
+        	cout <<"Ruta:::::::::::::::::::::::::::::::::::::::::::::::::::::: "<<"FIN"<<endl; 
+        	return reconstruct_path(map_node,current);
+        }
+
+
+
+		list<Node> neighbors = graph.getNeighbors(current);
+		cout<<"                 nodo: "<<current.tag<<   " size: " <<neighbors.size() <<endl;
+		for (auto neighbor = neighbors.begin(); neighbor !=neighbors.end(); neighbor++){
+			cout<<"FOR:::::::::::::::::::::::::::::::::::::"<<endl;
+
+			if (    !(closedMap.find( (*neighbor).tag ) == closedMap.end() ) )
+            {
+            	cout<<"continue..............."<< (*neighbor).tag <<endl;
+                continue;
+            }
+
+			if(  (openMap.find( (*neighbor).tag ) == openMap.end())   ){
+				Node* neighborAux = new  Node((*neighbor).x , (*neighbor).y, (*neighbor).tag)  ;
+				//neighborAux.f = (*neighbor).f;
+				//neighborAux.g = (*neighbor).g;
+				openMap[(*neighbor).tag ] = neighborAux;
+				cout<<" BEFORE INSERT:  "<<(*neighbor).tag <<endl;
 			}
 
-			if( !findNode(openList,*successor) ){
-				//cout<<"Segundo IF......."<<endl;
-				openList.insert(*successor);
-				cout<<" Second IF tag:  "<<(*successor).tag <<endl;
-				//(*successor).g = new_cost;
-    	       	//(*successor).f = (*successor).g + 0;//calculateDistance(*successor,end);
-    	       	//cameFrom.push_back(make_pair((*successor),current));
-			}
-
-			/*if( findNode(closedList,*successor) || new_cost < (*successor).f){
-				(*successor).g = new_cost;
-    	       	(*successor).f = (*successor).g + 0;//calculateDistance(*successor,end);
-    	       	cameFrom.push_back(make_pair((*successor),current));
-			}*/			
-
-			tentative_g = current.g + calculateDistance(*successor,current);
-			cout<< "SUMA:  " <<current.g <<" + "<<calculateDistance(*successor,current)<< " comp:  "<< (*successor).g <<endl;
-			if (tentative_g >= (*successor).g){
-				cout<<"Second continue...."<< tentative_g << " <> "<<(*successor).g<<endl;
+			tentative_g = current.g + calculateDistance(*neighbor,current);
+			cout<< "suma:  " <<current.g <<" + "<<calculateDistance(*neighbor,current)<< " comp:  "<< (*neighbor).g <<endl;
+			if (tentative_g >= (*neighbor).g){
+				cout<<"Second continue...."<< tentative_g << " <> "<<(*neighbor).g<<endl;
                 continue;
 			}
-			cout<<"INSERRRRRRRRRRRRRRRRR"<<endl;
-			tmpList.insert(*successor);
-			listRuta.push_back(*successor);
+			cout<<"inserttttttttttttttttt "<< (*neighbor).tag <<endl;
+			//tmpList.insert(*neighbor);
 
-			map_node[(*successor).tag] = current;
+			map_node[(*neighbor).tag] = current;
 
-			//cout<<"INSERT NEW PATH........................................................."<<endl;
-			(*successor).g = tentative_g;
+			(*neighbor).g = tentative_g;
 
+			(*neighbor).f = (*neighbor).g + calculateDistance(*neighbor,end);
 
-
-			(*successor).f = (*successor).g + calculateDistance(*successor,end);
-
-
-			for (auto it = openList.begin(); it !=openList.end(); it++){	
-				if((*successor).tag == (*it).tag ) {
-					cout<<"CHANGE VALUE: "  <<  (*openList.begin()).tag << endl;
-					openList.erase(*it);
-        			openList.insert( (*successor) );
-					
-					//return true;
-				}
-			}
-
-
-			cout<<"VALOR queue: "<< (*openList.begin()).g << endl;
-			cout<<"VALOR neighbor: "<<(*successor).g<<endl;
-
-
-
-
-			//gScore[neighbor] := tentative_gScore
-            //fScore[neighbor] := gScore[neighbor] + heuristic_cost_estimate(neighbor, goal)
-			
-    		//if(successor in closedList)	
-			// if(findNode(closedList,*successor)){
-   //  			cout<< (*successor).tag << endl;
-			//  	continue;
-			// }
-			// if(!findNode(openList,*successor)){
-			//  	openList.insert(*successor);
-			// }
-
-   //  		double tentative_g = current.g + calculateDistance(*successor,current);
-   //        	if(tentative_g >= (*successor).g){
-   //        		continue;
-   //        	}
-   //        	cameFrom.push_back(make_pair((*successor),current));
-   //        	cout << (*successor).tag << "-" << current.tag << endl ;
-   //        	(*successor).g = tentative_g;
-   //        	(*successor).f = (*successor).g + calculateDistance(*successor,end);
+			Node neighborAux = Node((*neighbor).x , (*neighbor).y, (*neighbor).tag);
+				neighborAux.f = (*neighbor).f;
+				neighborAux.g = (*neighbor).g;
+			cout<< "hhh:::::    "<<calculateDistance(neighborAux,end)<<endl;
+			cout<< "ggg:::::    "<<neighborAux.g<<endl;
+			cout<< "fff:::::    "<<neighborAux.f<<endl;
+			cout<<"inserttttttttttttttttt  2) "<< (*neighbor).tag <<endl;
+			openMap[ (*neighbor).tag]->g = neighborAux.g;// = new Node((*neighbor).x , (*neighbor).y, (*neighbor).tag);// &neighborAux;
+			openMap[ (*neighbor).tag]->f = neighborAux.f; 
+			//cout<< "kkkkk:  "<<openMap[5]->f<<endl;
+			//cout<< "kkkkk   "<<openMap[7]->f<<endl;
+			//cout<< "kkkkk   "<<openMap[0]->f<<endl;
+			cout<<"FINAL FOR:  "<< (*neighbor).tag <<" - "<<openMap[ (*neighbor).tag]->f<<endl;
+			//openMap[ (*neighbor).tag]-> 
+			//free(*neighborAux)	;
         }
-
-        //if(k==4) break;
-
+        //if(k==20) break;
 	}
-	cout <<"Ruta:::::::::::::::::::::::::::::::::::::::::::::::::::::: "<< tmpList.size() << endl ;
-	return listRuta; 	
+	return failure; 	
 }
 
 

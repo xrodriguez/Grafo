@@ -36,7 +36,7 @@ void Graph::printGraph(){
 	}
 }
 
-list<Node> Graph::getSuccessors(Node node){
+list<Node> Graph::getNeighbors(Node node){
 	list<Node> successors ;
 	for (auto p=adjacenseList[node.tag].begin(); p!=adjacenseList[node.tag].end(); p++){	
 		successors.push_back(*p->first);
@@ -45,7 +45,7 @@ list<Node> Graph::getSuccessors(Node node){
 }
 
 vector<Node> Graph::getNodesByPoint(double x , double y){
-    double radio = 3000 ;
+    double radio = 10 ;
     vector<Node> nearNodes ;
 	//cout << x << " " << y << endl;
     for (auto node=(this->nodes).begin(); node!= (this->nodes).end(); node++) {
