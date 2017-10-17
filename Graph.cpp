@@ -51,7 +51,6 @@ vector<Node> Graph::getNodesByPoint(double x , double y){
     for (auto node=(this->nodes).begin(); node!= (this->nodes).end(); node++) {
     	if( (node->x > x-radio and node->x < x+radio) 
 			and (node->y > y-radio and node->y < y+radio) ){
-			cout << "hola";
 			nearNodes.push_back(*node);
 		}
     }
