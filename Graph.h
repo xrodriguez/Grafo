@@ -24,6 +24,7 @@ class Graph
         vector<Edge> getEdges();
         list<Node> getNeighbors(Node node);
         vector<Node> getNodesByPoint(double x , double y);
+        vector<Node> getNodesByArea(double x , double y , int radio );
         ~Graph();
 
     
