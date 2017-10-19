@@ -198,7 +198,7 @@ int main()
 
     vector<Edge> edges ;
     string line;
-    ifstream file("data/Graphs/100points.data");  //open the file
+    ifstream file("data/Graphs/10000points.data");  //open the file
     if (file.is_open()){
         int i = 0 , numberNodes;
         while(getline (file,line)){
@@ -231,7 +231,7 @@ int main()
     //shortestPath = h.Astar(graph,nodes.at(60),nodes.at(104));
     //NO CORRE
     //shortestPath = h.Astar(graph,nodes.at(4),nodes.at(72));
-    shortestPath = h.Astar(graph,nodes.at(49),nodes.at(76));
+    shortestPath = h.Astar(graph,nodes.at(133),nodes.at(2673));
     //cout<< " size of nodes "<<shortestPath.size()<<endl;
     //= h.Astar(graph,nodes.at(0),nodes.at(9)); ;
     // shortestPath.push_back(nodes.at(0));

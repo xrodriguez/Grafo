@@ -3,7 +3,6 @@
 #include "Heuristics.h"
 #include "Graph.h"
 #include "Node.h"
-
 #include <list>
 #include <vector>
 #include <map>
@@ -94,147 +93,87 @@ bool haveEdge(int a, int b){
 
 vector<Node> reconstruct_path( map<int, Node> cameFrom ,Node current  ){
 	vector<Node> path;
-
 	path.push_back(current);
 	int i=0;
-	cout<<  "size of map:    " <<cameFrom.size() <<endl;
 	map<int, Node>::iterator iter ;
-	for ( iter = cameFrom.begin(); iter !=cameFrom.end(); ++iter)
-	{
-		std::cout << iter->first << " => " << iter->second.tag << '\n';
-	}
-
 
 	while(  ! (cameFrom.find(current.tag) == cameFrom.end() ) ){
-		//cout<<"FIND"<<endl;i++;if(i==2)break;
-		//i++;if(i==20) break;
-		cout<<"WHILE"<< current.tag <<endl;
 		current = cameFrom[current.tag];
 		path.push_back(current);
-
 	}
-
 	return path;
-
 }
 
 
 
 vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
 	vector<Node> failure ;
-
 	cout<<  "NODOS: " <<start.tag<<" - "<<end.tag<<endl;
 	double tentative_g;
    	map<int,Node*> openMap;
-
    	map<int,Node*> closedMap;
-
    	map<int, Node> map_node;
-
 
 	start.g = 0 ;
 	openMap[start.tag] = &start;
 	start.f = calculateDistance(start,end);
-	int k=0;
-	///while(!openList.empty()){
 	while(!openMap.empty()){
-		k++;		
-		Node* _bestCandidate = NULL;
+		Node* bestNode = NULL;
 		map<int,Node* >::iterator _it;
-		if (k==2)
-		{
-			//cout<< "kkk:  "<<openMap[5]->f<<endl;
-			//cout<< "kkk   "<<openMap[7]->f<<endl;
-			//cout<< "kkk   "<<openMap[0]->f<<endl;
-		}
-
-
 
 		for ( _it = openMap.begin(); _it != openMap.end(); ++_it )
         {
-            Node* _toExplore_candidate = _it->second;
-            if ( _bestCandidate == NULL )
+            Node* candidate = _it->second;
+            if ( bestNode == NULL )
             {
-            	_bestCandidate = _toExplore_candidate;
+            	bestNode = candidate;
             }
-            else if ( _toExplore_candidate->f < _bestCandidate->f )
+            else if ( candidate->f < bestNode->f )
             {
-                	_bestCandidate = _toExplore_candidate;
+                	bestNode = candidate;
             }
         }
 
-        Node current = *(_bestCandidate);
-
-        //Node* _nextToExplore = _bestCandidate;
+        Node current = *(bestNode);
         openMap.erase( current.tag );
         closedMap[current.tag] = &current;
 
         map<int, Node>::iterator iter ;
-		for ( iter = map_node.begin(); iter !=map_node.end(); ++iter)
-		{
-			std::cout << iter->first << " => " << iter->second.tag << '\n';
-		}
 
-
-        //if(current.compare(end)) {
         if(current.tag == end.tag) {
         	cout <<"Ruta:::::::::::::::::::::::::::::::::::::::::::::::::::::: "<<"FIN"<<endl; 
         	return reconstruct_path(map_node,current);
         }
 
-
-
 		list<Node> neighbors = graph.getNeighbors(current);
-		cout<<"                 nodo: "<<current.tag<<   " size: " <<neighbors.size() <<endl;
 		for (auto neighbor = neighbors.begin(); neighbor !=neighbors.end(); neighbor++){
-			cout<<"FOR:::::::::::::::::::::::::::::::::::::"<<endl;
-
-			if (    !(closedMap.find( (*neighbor).tag ) == closedMap.end() ) )
-            {
-            	cout<<"continue..............."<< (*neighbor).tag <<endl;
+			//cout<<"FOR:::::::::::::::::::::::::::::::::::::"<<endl;
+			if (    !(closedMap.find( (*neighbor).tag ) == closedMap.end() ) ){
                 continue;
             }
 
 			if(  (openMap.find( (*neighbor).tag ) == openMap.end())   ){
 				Node* neighborAux = new  Node((*neighbor).x , (*neighbor).y, (*neighbor).tag)  ;
-				//neighborAux.f = (*neighbor).f;
-				//neighborAux.g = (*neighbor).g;
 				openMap[(*neighbor).tag ] = neighborAux;
-				cout<<" BEFORE INSERT:  "<<(*neighbor).tag <<endl;
 			}
 
 			tentative_g = current.g + calculateDistance(*neighbor,current);
-			cout<< "suma:  " <<current.g <<" + "<<calculateDistance(*neighbor,current)<< " comp:  "<< (*neighbor).g <<endl;
 			if (tentative_g >= (*neighbor).g){
-				cout<<"Second continue...."<< tentative_g << " <> "<<(*neighbor).g<<endl;
                 continue;
 			}
-			cout<<"inserttttttttttttttttt "<< (*neighbor).tag <<endl;
-			//tmpList.insert(*neighbor);
 
 			map_node[(*neighbor).tag] = current;
-
 			(*neighbor).g = tentative_g;
-
 			(*neighbor).f = (*neighbor).g + calculateDistance(*neighbor,end);
 
 			Node neighborAux = Node((*neighbor).x , (*neighbor).y, (*neighbor).tag);
 				neighborAux.f = (*neighbor).f;
 				neighborAux.g = (*neighbor).g;
-			cout<< "hhh:::::    "<<calculateDistance(neighborAux,end)<<endl;
-			cout<< "ggg:::::    "<<neighborAux.g<<endl;
-			cout<< "fff:::::    "<<neighborAux.f<<endl;
-			cout<<"inserttttttttttttttttt  2) "<< (*neighbor).tag <<endl;
+
 			openMap[ (*neighbor).tag]->g = neighborAux.g;// = new Node((*neighbor).x , (*neighbor).y, (*neighbor).tag);// &neighborAux;
 			openMap[ (*neighbor).tag]->f = neighborAux.f; 
-			//cout<< "kkkkk:  "<<openMap[5]->f<<endl;
-			//cout<< "kkkkk   "<<openMap[7]->f<<endl;
-			//cout<< "kkkkk   "<<openMap[0]->f<<endl;
-			cout<<"FINAL FOR:  "<< (*neighbor).tag <<" - "<<openMap[ (*neighbor).tag]->f<<endl;
-			//openMap[ (*neighbor).tag]-> 
-			//free(*neighborAux)	;
+
         }
-        //if(k==20) break;
 	}
 	return failure; 	
 }
