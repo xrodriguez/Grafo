@@ -57,5 +57,16 @@ vector<Node> Graph::getNodesByPoint(double x , double y){
     return nearNodes;
 }
 
+vector<Node> Graph::getNodesByArea(double x , double y , int radio ){
+    vector<Node> nearNodes ;
+	//cout << x << " " << y << endl;
+    for (auto node=(this->nodes).begin(); node!= (this->nodes).end(); node++) {
+    	if( (node->x > x-radio and node->x < x+radio) 
+			and (node->y > y-radio and node->y < y+radio) ){
+			nearNodes.push_back(*node);
+		}
+    }
+    return nearNodes;
+}
 
 Graph::~Graph(){}
