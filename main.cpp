@@ -243,7 +243,7 @@ int main()
 
     vector<Edge> edges ;
     string line;
-    ifstream file("data/Graphs/1000points.data");  //open the file
+    ifstream file("data/Graphs/10000points.data");  //open the file
     if (file.is_open()){
         int i = 0 , numberNodes;
         while(getline (file,line)){
