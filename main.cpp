@@ -41,7 +41,7 @@ vector<vector<Node>> parallelSearch(Graph graph,vector<Node> start, vector<Node>
     vector<vector<Node>> shortestPaths;
     Heuristics heuristics; 
     double t0 = omp_get_wtime();
-    #pragma omp parallel for num_threads(4) 
+    #pragma omp parallel for num_threads(4) private(shortestPath) shared(shortestPaths)
     for( i=0; i < start.size(); i++){
         for( j=0; j < end.size(); j++){
             shortestPath = heuristics.Astar(graph,start[i],end[j]);
