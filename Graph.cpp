@@ -27,6 +27,16 @@ Graph::Graph(vector<Node> nodes,vector<Edge> edges){
 //     }
 // }
 
+Node Graph::getNode(int tag){
+	for (auto node=(this->nodes).begin(); node!= (this->nodes).end(); node++) {
+    	if( node->tag == tag ){
+    		return *node;
+		}
+    }
+}
+
+
+
 void Graph::printGraph(){
 	for (int i = 0; i < this->numberNodes; i++){
 		for (auto p=adjacenseList[i].begin(); p!=adjacenseList[i].end(); p++){

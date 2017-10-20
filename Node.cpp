@@ -15,18 +15,10 @@ Node::Node(double x , double y, int tag){
             this->g = INF;//0;
         }
 
-
-double Node::getX(int scale,int translate){
-    return this->x ;//(this->x/scale)+translate;
-}
-
-double Node::getY(int scale,int translate){
-    return this->y ;//(this->y/scale)+translate;
-}
-
-
 bool Node::compare(Node node){
 	return this->x == node.x and this->y == node.y;
 }
+
+
 
 Node::~Node(){};

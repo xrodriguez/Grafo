@@ -5,7 +5,7 @@
 //#include <SFML/Text.hpp>
 #include <iostream>
 #include <list>
-
+#include <omp.h>
 #include "Heuristics.h"
 #include "Graph.h"
 #include "Node.h"
@@ -13,6 +13,48 @@
 
 using namespace std;
 using namespace sf;
+
+vector<vector<Node>> sequentialSearch(Graph graph,vector<Node> start, vector<Node> end,vector<vector<Node>> shortestPaths){
+    int i,j ;
+    vector<Node> shortestPath;
+    Heuristics heuristics; 
+    double t0 = omp_get_wtime();
+    for( i=0; i < start.size(); i++){
+        for( j=0; j < end.size(); j++){
+           shortestPath = heuristics.Astar(graph,start[i],end[j]);
+            if(shortestPath.empty()){
+                cout << "ERROR : RUTA INVALIDA ";
+            }else{
+                shortestPaths.push_back(shortestPath);
+            }
+        }
+    }
+    double t1 = omp_get_wtime();
+    cout << "time sequential search : " << t1-t0 << endl ;
+    return shortestPaths;
+} 
+ 
+vector<vector<Node>> parallelSearch(Graph graph,vector<Node> start, vector<Node> end,vector<vector<Node>> shortestPaths){
+    int i,j ;
+    vector<Node> shortestPath;
+    Heuristics heuristics; 
+    double t0 = omp_get_wtime();
+    #pragma omp parallel for num_threads(4) private(shortestPaths)
+    for( i=0; i < start.size(); i++){
+        for( j=0; j < end.size(); j++){
+            shortestPath = heuristics.Astar(graph,start[i],end[j]);
+            if(shortestPath.empty()){
+                cout << "ERROR : RUTA INVALIDA ";
+            }else{
+                shortestPaths.push_back(shortestPath);
+            }
+        }
+    }
+    double t1 = omp_get_wtime();
+    cout << "time sequential search : " << t1-t0 << endl ;
+    return shortestPaths;
+}   
+
 
 
 void draw(Graph graph){
@@ -59,18 +101,17 @@ void draw(Graph graph){
                         y = (y*height)/(height+deltaHeight) ;
                         selectedNode = graph.getNodesByPoint(x,y);
                         isSelectedNode = true;
-                        cout << "click" << endl;
                     }else if (event.mouseButton.button == Mouse::Right){
                         int x = event.mouseButton.x ;
                         x = (x*width)/(width+deltaWidth) ;
                         int y = event.mouseButton.y ;
                         //cout << "x " << x << endl;
                         //cout << "y " << y << endl;
-                        int radio = 10;
+                        int radio = 60;
                         if(start.empty()){
-                            start = graph.getNodesByArea(x,y,20);
+                            start = graph.getNodesByArea(x,y,radio);
                         }else if(end.empty()){
-                            end = graph.getNodesByArea(x,y,20);
+                            end = graph.getNodesByArea(x,y,radio);
                         }
                         //isSelectedNodes = true;
                         CircleShape area(radio,40);
@@ -166,16 +207,13 @@ void draw(Graph graph){
             }
         }
 
+
         if(!start.empty() and !end.empty()){
-            cout << "busqueda paralela";
-            for (auto node=start.begin(); node!=start.end(); node++) {
-                shortestPath = heuristics.Astar(graph,*node,end[0]);
-                if(shortestPath.empty()){
-                    cout << "ERROR : RUTA INVALIDA ";
-                }else{
-                    shortestPaths.push_back(shortestPath);
-                }
-            }
+            cout << start.size() << endl;
+            cout << end.size() << endl;
+            shortestPaths = sequentialSearch(graph,start,end,shortestPaths);
+            //shortestPaths.clear();
+            //shortestPaths = parallelSearch(graph,start,end,shortestPaths);
             start.clear();
             end.clear();
         }
@@ -229,7 +267,6 @@ int main()
 
     Graph graph(nodes,edges);
     //graph.printGraph();
-
     draw(graph);
 
 
