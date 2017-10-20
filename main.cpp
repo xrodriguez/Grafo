@@ -14,9 +14,10 @@
 using namespace std;
 using namespace sf;
 
-vector<vector<Node>> sequentialSearch(Graph graph,vector<Node> start, vector<Node> end,vector<vector<Node>> shortestPaths){
+vector<vector<Node>> sequentialSearch(Graph graph,vector<Node> start, vector<Node> end){
     int i,j ;
     vector<Node> shortestPath;
+    vector<vector<Node>> shortestPaths;
     Heuristics heuristics; 
     double t0 = omp_get_wtime();
     for( i=0; i < start.size(); i++){
@@ -34,12 +35,13 @@ vector<vector<Node>> sequentialSearch(Graph graph,vector<Node> start, vector<Nod
     return shortestPaths;
 } 
  
-vector<vector<Node>> parallelSearch(Graph graph,vector<Node> start, vector<Node> end,vector<vector<Node>> shortestPaths){
-    int i,j ;
+vector<vector<Node>> parallelSearch(Graph graph,vector<Node> start, vector<Node> end){
+    int i,j;
     vector<Node> shortestPath;
+    vector<vector<Node>> shortestPaths;
     Heuristics heuristics; 
     double t0 = omp_get_wtime();
-    #pragma omp parallel for num_threads(4) private(shortestPaths)
+    #pragma omp parallel for num_threads(4) 
     for( i=0; i < start.size(); i++){
         for( j=0; j < end.size(); j++){
             shortestPath = heuristics.Astar(graph,start[i],end[j]);
@@ -51,7 +53,7 @@ vector<vector<Node>> parallelSearch(Graph graph,vector<Node> start, vector<Node>
         }
     }
     double t1 = omp_get_wtime();
-    cout << "time sequential search : " << t1-t0 << endl ;
+    cout << "time parallel search : " << t1-t0 << endl ;
     return shortestPaths;
 }   
 
@@ -102,21 +104,25 @@ void draw(Graph graph){
                         selectedNode = graph.getNodesByPoint(x,y);
                         isSelectedNode = true;
                     }else if (event.mouseButton.button == Mouse::Right){
-                        int x = event.mouseButton.x ;
+                        double x = event.mouseButton.x ;
                         x = (x*width)/(width+deltaWidth) ;
-                        int y = event.mouseButton.y ;
+                        double y = event.mouseButton.y ;
+                        y = (y*height)/(height+deltaHeight);
                         //cout << "x " << x << endl;
                         //cout << "y " << y << endl;
-                        int radio = 60;
+                        int radio = 40;
                         if(start.empty()){
+                            window.clear();
                             start = graph.getNodesByArea(x,y,radio);
                         }else if(end.empty()){
                             end = graph.getNodesByArea(x,y,radio);
                         }
                         //isSelectedNodes = true;
-                        CircleShape area(radio,40);
+                        CircleShape area;
                         area.setFillColor(Color::Red);
+                        area.setOrigin(radio,radio);
                         area.setPosition(x,y);
+                        area.setRadius(radio);
                         area.setOutlineThickness(4);
                         area.setOutlineColor(Color::Red);
                         window.draw(area);
@@ -211,21 +217,23 @@ void draw(Graph graph){
         if(!start.empty() and !end.empty()){
             cout << start.size() << endl;
             cout << end.size() << endl;
-            shortestPaths = sequentialSearch(graph,start,end,shortestPaths);
-            //shortestPaths.clear();
-            //shortestPaths = parallelSearch(graph,start,end,shortestPaths);
+            //shortestPaths = sequentialSearch(graph,start,end);
+            shortestPaths = parallelSearch(graph,start,end);
+            cout<< shortestPaths.size() << endl;
             start.clear();
             end.clear();
         }
-        // shortestPath
+
+        //shortestPath
         for (auto shortestPath = shortestPaths.begin(); shortestPath!=shortestPaths.end(); shortestPath++) {
             for (auto node=(*shortestPath).begin(); node!=(*shortestPath).end(); node++) {
                 auto nextNode = next(node,1);
                 if(nextNode != (*shortestPath).end() ){ 
                     VertexArray lines(Lines,2);
-                    lines[0].color = Color::Blue;
+                    Color color(23, 165, 137);
+                    lines[0].color = color;
                     lines[0].position = Vector2f(node->x,node->y);
-                    lines[1].color = Color::Blue;
+                    lines[1].color = color;
                     lines[1].position = Vector2f(nextNode->x,nextNode->y);
                     window.draw(lines);            
                 }
@@ -243,7 +251,7 @@ int main()
 
     vector<Edge> edges ;
     string line;
-    ifstream file("data/Graphs/10000points.data");  //open the file
+    ifstream file("data/Graphs/1000points.data");  //open the file
     if (file.is_open()){
         int i = 0 , numberNodes;
         while(getline (file,line)){
