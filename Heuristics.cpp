@@ -302,12 +302,10 @@ vector<Node>  Heuristics::Dijkstra(Graph graph , Node start,Node end){
 
 
 
-void  Heuristics::contractionHierarchie(Graph graph , Node start,Node end){
+/*void  Heuristics::contractionHierarchie(Graph graph , Node start,Node end){
 
 
-
-
-}
+}*/
 
 
 
