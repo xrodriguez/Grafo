@@ -22,7 +22,7 @@ vector<vector<Node>> sequentialSearch(Graph graph,vector<Node> start, vector<Nod
     double t0 = omp_get_wtime();
     for( i=0; i < start.size(); i++){
         for( j=0; j < end.size(); j++){
-           shortestPath = heuristics.contractionHierarchie(graph,start[i],end[j]);
+           shortestPath = heuristics.Astar(graph,start[i],end[j]);
             if(shortestPath.empty()){
                 cout << "ERROR : RUTA INVALIDA ";
             }else{
@@ -44,7 +44,7 @@ vector<vector<Node>> parallelSearch(Graph graph,vector<Node> start, vector<Node>
     #pragma omp parallel for num_threads(4) private(shortestPath) shared(shortestPaths)
     for( i=0; i < start.size(); i++){
         for( j=0; j < end.size(); j++){
-            shortestPath = heuristics.contractionHierarchie(graph,start[i],end[j]);
+            shortestPath = heuristics.Astar(graph,start[i],end[j]);
             if(shortestPath.empty()){
                 cout << "ERROR : RUTA INVALIDA ";
             }else{
@@ -198,7 +198,7 @@ void draw(Graph graph){
 
             limits.push_back(selectedNode[0]);
             if(limits.size() == 2) {
-                shortestPath = heuristics.contractionHierarchie(graph,limits[0],limits[1]);
+                shortestPath = heuristics.Astar(graph,limits[0],limits[1]);
                 if(shortestPath.empty()){
                     cout << "ERROR : RUTA INVALIDA ";
                 }else{
