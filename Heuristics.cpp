@@ -55,7 +55,6 @@ vector<Node> reconstruct_path( map<int, Node> cameFrom ,Node current  ){
 
 vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
 	vector<Node> failure ;
-	cout<<  "NODOS: " <<start.tag<<" - "<<end.tag<<endl;
 	double tentative_g;
    	map<int,Node*> openMap;
    	map<int,Node*> closedMap;
@@ -88,7 +87,6 @@ vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
         map<int, Node>::iterator iter ;
 
         if(current.tag == end.tag) {
-        	cout <<"Ruta:::::::::::::::::::::::::::::::::::::::::::::::::::::: "<<"FIN"<<endl; 
         	return reconstruct_path(map_node,current);
         }
 
@@ -303,6 +301,13 @@ vector<Node>  Heuristics::Dijkstra(Graph graph , Node start,Node end){
 
 
 
+
+void  Heuristics::contractionHierarchie(Graph graph , Node start,Node end){
+
+
+
+
+}
 
 
 
