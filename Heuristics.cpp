@@ -302,10 +302,35 @@ vector<Node>  Heuristics::Dijkstra(Graph graph , Node start,Node end){
 
 
 
-/*void  Heuristics::contractionHierarchie(Graph graph , Node start,Node end){
+vector<Node>  Heuristics::contractionHierarchie(Graph graph , Node start,Node end){
+	vector<Node> output;
+
+	cout<<"preprocessing"<<endl;
+
+	if(graph.numberNodes == 0){
+		cout<<"have Not nodes"<<endl;
+	}else{
+		cout<<"have "<< graph.numberNodes <<" Nodes"<<endl;
+	}
+
+	int k = 0;
+	cout<< graph.edges.size() <<endl;
+	/*
+	while(graph.numberNodes!=0){
+		cout<< graph.edges.size() <<endl;
 
 
-}*/
+		
+	}*/
+
+
+
+
+
+
+
+	return output;
+}
 
 
 
