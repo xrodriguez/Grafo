@@ -3,6 +3,7 @@
 
 #include<bits/stdc++.h>
 #include "Edge.h"
+#include "Node.h"
 #include <list>
 #include <vector>
 
@@ -22,6 +23,7 @@ class Graph
         void printGraph();
         vector<Node> getNodes();
         vector<Edge> getEdges();
+        Node getNode(int tag);
         list<Node> getNeighbors(Node node);
         vector<Node> getNodesByPoint(double x , double y);
         vector<Node> getNodesByArea(double x , double y , int radio );

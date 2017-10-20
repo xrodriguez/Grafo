@@ -314,7 +314,7 @@ vector<Node>  Heuristics::contractionHierarchie(Graph graph , Node start,Node en
 	}
 
 	int k = 0;
-	cout<< graph.edges.size() <<endl;
+	cout<< graph.nodes[0].tag <<endl;
 	/*
 	while(graph.numberNodes!=0){
 		cout<< graph.edges.size() <<endl;
