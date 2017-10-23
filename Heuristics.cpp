@@ -6,6 +6,8 @@
 #include <list>
 #include <vector>
 #include <map>
+#include <fstream>
+
 
 using namespace std;
 
@@ -315,6 +317,8 @@ vector<Node>  Heuristics::contractionHierarchie(Graph graph , Node start,Node en
 
 	int k = 0;
 	cout<< graph.nodes[0].tag <<endl;
+
+
 	/*
 	while(graph.numberNodes!=0){
 		cout<< graph.edges.size() <<endl;
@@ -323,14 +327,44 @@ vector<Node>  Heuristics::contractionHierarchie(Graph graph , Node start,Node en
 		
 	}*/
 
-
-
-
-
-
-
 	return output;
 }
+
+
+
+void  Heuristics::preprocessing(Graph graph ){
+	vector<Node> shortestPath;
+	cout<<"void:"<<endl;
+	shortestPath = Astar(graph,graph.nodes[0],graph.nodes[7]);
+	cout<<shortestPath.size()<<endl;
+
+
+
+	ofstream myfile;
+  	myfile.open ("example.txt");
+  	
+
+  	for(int m=0;m<graph.numberNodes;m++){
+  		for(int n=0;n<graph.numberNodes;n++){
+  			shortestPath = Astar(graph,graph.nodes[m],graph.nodes[n]);
+		  	myfile <<graph.nodes[m].tag << " "<< graph.nodes[n].tag <<" ";// "Writing this to a file.\n";
+		  	for(int i=0; i<shortestPath.size(); i++){
+		  		myfile <<shortestPath[i].tag<<" ";
+		  	}
+		  	myfile<<"\n";
+		}  	
+	}
+
+  	myfile.close();
+
+}
+
+
+
+
+
+
+
 
 
 
