@@ -31,7 +31,10 @@ vector<vector<Node>> sequentialSearch(Graph graph,vector<Node> start, vector<Nod
         }
     }
     double t1 = omp_get_wtime();
-    cout << "time sequential search : " << t1-t0 << endl ;
+    cout << "Number initial nodes : " << start.size()<< endl;
+    cout << "Number end nodes : " << end.size()<< endl;
+    cout << "Number searchs : " << start.size()*end.size()<< endl;
+    cout << "Time sequential search : " << t1-t0 << endl ;
     return shortestPaths;
 } 
  
@@ -46,15 +49,18 @@ vector<vector<Node>> parallelSearch(Graph graph,vector<Node> start, vector<Node>
         for( j=0; j < end.size(); j++){
             shortestPath = heuristics.Astar(graph,start[i],end[j]);
             if(shortestPath.empty()){
-                cout << "ERROR : RUTA INVALIDA ";
+                cout << "ERROR : RUTA INVALIDA " << endl;
             }else{
-                shortestPaths.push_back(shortestPath);
             }
+            # pragma omp critical
+            shortestPaths.push_back(shortestPath);
         }
     }
     double t1 = omp_get_wtime();
-    cout << "time parallel search : " << t1-t0 << endl ;
-    //#pragma omp barrier 
+    cout << "Number initial nodes : " << start.size() << endl;
+    cout << "Number end nodes : " << end.size() << endl;
+    cout << "Number searchs : " << start.size()*end.size() << endl;
+    cout << "Time parallel search : " << t1-t0 << endl ;
     return shortestPaths;
 }   
 
@@ -66,7 +72,7 @@ void draw(Graph graph){
     RenderWindow window(sf::VideoMode(width,height), "Grafo");
     
     vector<CircleShape> shapes ;
-    vector<Node> shortestPath;
+    
     vector<vector<Node>> shortestPaths;
     
     Heuristics heuristics;    
@@ -75,14 +81,13 @@ void draw(Graph graph){
 
     Font font;
     font.loadFromFile("arial.ttf");
-    vector<Node> limits;
     
     vector<Node> start;
     vector<Node> end;
     
     while (window.isOpen()) {
 
-        bool isSelectedNode = false , selectedNodes = false;
+        bool simpleSearch = false , multipleSearch = false;
         Event event;
         while (window.pollEvent(event)){
             switch (event.type) {
@@ -102,8 +107,27 @@ void draw(Graph graph){
                         x = (x*width)/(width+deltaWidth) ;
                         int y = event.mouseButton.y ;
                         y = (y*height)/(height+deltaHeight) ;
-                        selectedNode = graph.getNodesByPoint(x,y);
-                        isSelectedNode = true;
+                        //selectedNode = graph.getNodesByPoint(x,y);
+                        if(start.empty()){
+                            window.clear();
+                            start = graph.getNodesByPoint(x,y);
+                            Text text(to_string((start[0]).tag), font);
+                            text.setCharacterSize(15);
+                            //text.setStyle(Text::Bold);
+                            text.setColor(Color::Red);
+                            text.setPosition(start[0].x,start[0].y);
+                            window.draw(text);
+
+                        }else if(end.empty()){
+                            end = graph.getNodesByPoint(x,y);
+                            Text text(to_string((end[0]).tag), font);
+                            text.setCharacterSize(15);
+                            //text.setStyle(Text::Bold);
+                            text.setColor(Color::Red);
+                            text.setPosition(end[0].x,end[0].y);
+                            window.draw(text);
+                        }
+                        simpleSearch = true;
                     }else if (event.mouseButton.button == Mouse::Right){
                         double x = event.mouseButton.x ;
                         x = (x*width)/(width+deltaWidth) ;
@@ -111,7 +135,7 @@ void draw(Graph graph){
                         y = (y*height)/(height+deltaHeight);
                         //cout << "x " << x << endl;
                         //cout << "y " << y << endl;
-                        int radio = 40;
+                        int radio = 30;
                         if(start.empty()){
                             window.clear();
                             start = graph.getNodesByArea(x,y,radio);
@@ -127,45 +151,21 @@ void draw(Graph graph){
                         area.setOutlineThickness(4);
                         area.setOutlineColor(Color::Red);
                         window.draw(area);
+                        multipleSearch = true;
                     }
                     break;
                 case Event::TextEntered :
                     if (event.text.unicode == 99 ){
                         window.clear();
-                        limits.clear();
                         start.clear();
                         end.clear();
-                        shortestPath.clear();
                         shortestPaths.clear();
                         cout << "Clean ... "<< endl;
                     }
                 default:
                     break;
             }
-            // if (event.type == sf::Event::Closed)
-            //     window.close()  ;
-            
-            // if (event.type == sf::Event::Resized){
-            //     window.clear();
-            //     deltaWidth = event.size.width-width;
-            //     deltaHeight = event.size.height-height;
-            // }
-                
-            // if (event.type == sf::Event::MouseButtonPressed) {
-            //     if (event.mouseButton.button == sf::Mouse::Left){
-            //         int x = event.mouseButton.x ;
-            //         x = (x*width)/(width+deltaWidth) ;
-            //         int y = event.mouseButton.y ;
-            //         y = (y*height)/(height+deltaHeight) ;
-            //         selectedNodes = graph.getNodesByPoint(x,y);
-            //         isSelectedNodes = true;
-            //     }else if (event.mouseButton.button == sf::Mouse::Right){
-            //         window.clear();
-            //         limits.clear();
-            //         shortestPath.clear();
 
-            //     }
-            // }
         }
         
         
@@ -187,56 +187,31 @@ void draw(Graph graph){
 
         }
 
-        if(!selectedNode.empty() and isSelectedNode){
-            //cout<< selectedNodes.size() << endl;
-            Text text(to_string((selectedNode[0]).tag), font);
-            text.setCharacterSize(15);
-            //text.setStyle(Text::Bold);
-            text.setColor(Color::Red);
-            text.setPosition(selectedNode[0].x,selectedNode[0].y);
-            window.draw(text);
-        
-
-            limits.push_back(selectedNode[0]);
-            if(limits.size() == 2) {
-                shortestPath = heuristics.Astar(graph,limits[0],limits[1]);
-                if(shortestPath.empty()){
-                    cout << "ERROR : RUTA INVALIDA ";
-                }else{
-                    shortestPaths.push_back(shortestPath);
-                }
-
-            }else if(limits.size() > 2) {
-                window.clear();
-                limits.clear();
-                shortestPath.clear();
-                shortestPaths.clear();
+        if(!start.empty() and !end.empty() ){
+            if(simpleSearch){
+                shortestPaths = sequentialSearch(graph,start,end);
+            }else if(multipleSearch){
+                shortestPaths = parallelSearch(graph,start,end);
             }
-        }
-
-
-        if(!start.empty() and !end.empty()){
-            cout << start.size() << endl;
-            cout << end.size() << endl;
-            //shortestPaths = sequentialSearch(graph,start,end);
-            shortestPaths = parallelSearch(graph,start,end);
-            cout<< shortestPaths.size() << endl;
+            selectedNode.clear();
             start.clear();
             end.clear();
         }
 
         //shortestPath
-        for (auto shortestPath = shortestPaths.begin(); shortestPath!=shortestPaths.end(); shortestPath++) {
-            for (auto node=(*shortestPath).begin(); node!=(*shortestPath).end(); node++) {
-                auto nextNode = next(node,1);
-                if(nextNode != (*shortestPath).end() ){ 
-                    VertexArray lines(Lines,2);
-                    Color color(23, 165, 137);
-                    lines[0].color = color;
-                    lines[0].position = Vector2f(node->x,node->y);
-                    lines[1].color = color;
-                    lines[1].position = Vector2f(nextNode->x,nextNode->y);
-                    window.draw(lines);            
+        if(!shortestPaths.empty()){
+            for (auto shortestPath = shortestPaths.begin(); shortestPath!=shortestPaths.end(); shortestPath++) {
+                for (auto node=(*shortestPath).begin(); node!=(*shortestPath).end(); node++) {
+                    auto nextNode = next(node,1);
+                    if(nextNode != (*shortestPath).end() ){ 
+                        VertexArray lines(Lines,2);
+                        Color color(23, 165, 137);
+                        lines[0].color = color;
+                        lines[0].position = Vector2f(node->x,node->y);
+                        lines[1].color = color;
+                        lines[1].position = Vector2f(nextNode->x,nextNode->y);
+                        window.draw(lines);            
+                    }
                 }
             }
         }
