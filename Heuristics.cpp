@@ -332,24 +332,42 @@ vector<Node>  Heuristics::contractionHierarchie(Graph graph , Node start,Node en
 
 
 
+float maxDistance(Graph graph){
+
+	float max = 0;
+
+
+	for(int m=0;m<graph.numberNodes;m++){
+  		for(int n=0;n<graph.numberNodes;n++){
+  			if(max < calculateDistance(graph.nodes[m],graph.nodes[n])  ){
+	  			max = calculateDistance(graph.nodes[m],graph.nodes[n] );
+			}
+		}
+	}	
+
+	return max;
+}
+
+
+
 void  Heuristics::preprocessing(Graph graph ){
 	vector<Node> shortestPath;
 	shortestPath = Astar(graph,graph.nodes[644],graph.nodes[7474]);
 
 
-	float mediaDistance = calculateDistance(graph.nodes[0],graph.nodes[2]);
-
-
-
+	//float max = calculateDistance(graph.nodes[0],graph.nodes[2]);
+	float mediaDistance = maxDistance(graph);
+	//cout<<mediaDistance<<endl;
+	//cout<<max<<endl;
 
 
 	ofstream myfile;
   	myfile.open ("preprocessed/10000points.data");
   	
 
-  	/*for(int m=0;m<graph.numberNodes;m++){
+  	for(int m=0;m<graph.numberNodes;m++){
   		for(int n=0;n<graph.numberNodes;n++){
-  			if(mediaDistance*0.95 < calculateDistance(graph.nodes[m],graph.nodes[n])  ){
+  			if(mediaDistance*0.80 < calculateDistance(graph.nodes[m],graph.nodes[n])  ){
 	  			shortestPath = Astar(graph,graph.nodes[m],graph.nodes[n]);
 			  	myfile <<graph.nodes[m].tag << " "<< graph.nodes[n].tag <<" ";// "Writing this to a file.\n";
 			  	for(int i=0; i<shortestPath.size(); i++){
@@ -358,7 +376,7 @@ void  Heuristics::preprocessing(Graph graph ){
 			  	myfile<<"\n";
 			}
 		}  	
-	}*/
+	}
 
   	myfile.close();
 
