@@ -339,6 +339,11 @@ void  Heuristics::preprocessing(Graph graph ){
 	cout<<shortestPath.size()<<endl;
 
 
+	float mediaDistance = calculateDistance(graph.nodes[0],graph.nodes[2]);
+
+
+
+
 
 	ofstream myfile;
   	myfile.open ("example.txt");
@@ -346,12 +351,14 @@ void  Heuristics::preprocessing(Graph graph ){
 
   	for(int m=0;m<graph.numberNodes;m++){
   		for(int n=0;n<graph.numberNodes;n++){
-  			shortestPath = Astar(graph,graph.nodes[m],graph.nodes[n]);
-		  	myfile <<graph.nodes[m].tag << " "<< graph.nodes[n].tag <<" ";// "Writing this to a file.\n";
-		  	for(int i=0; i<shortestPath.size(); i++){
-		  		myfile <<shortestPath[i].tag<<" ";
-		  	}
-		  	myfile<<"\n";
+  			if(mediaDistance*0.75 < calculateDistance(graph.nodes[m],graph.nodes[n])  ){
+	  			shortestPath = Astar(graph,graph.nodes[m],graph.nodes[n]);
+			  	myfile <<graph.nodes[m].tag << " "<< graph.nodes[n].tag <<" ";// "Writing this to a file.\n";
+			  	for(int i=0; i<shortestPath.size(); i++){
+			  		myfile <<shortestPath[i].tag<<" ";
+			  	}
+			  	myfile<<"\n";
+			}
 		}  	
 	}
 
