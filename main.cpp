@@ -14,6 +14,26 @@
 using namespace std;
 using namespace sf;
 
+vector<vector<Node>> isPreProcessed(Grafo grafo , int start , int end){
+    vector<vector<Node>> shortestPaths;
+    ifstream file("preProcessed/100points.data");  //open the file
+    if (file.is_open()){
+        int i = 0 ;
+        while(getline (file,line)){
+            vector<Node> shortestPath;
+            istringstream iss(line);
+            int isFound = 0 ;
+            for(std::string line; iss >> line; )
+                if( start == stoi(line) or end == stoi(line)) 
+                    isFound++;
+                if(isFound == 2)
+                    shortestPath.push_back(graph.getNode(line));
+            i++;
+        }
+        file.close();
+    }
+}
+
 vector<vector<Node>> sequentialSearch(Graph graph,vector<Node> start, vector<Node> end){
     int i,j ;
     vector<Node> shortestPath;
