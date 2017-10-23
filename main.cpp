@@ -14,23 +14,33 @@
 using namespace std;
 using namespace sf;
 
-vector<vector<Node>> isPreProcessed(Grafo grafo , int start , int end){
+vector<vector<Node>> isPreProcessed(Graph graph , int start , int end){
     vector<vector<Node>> shortestPaths;
-    ifstream file("preProcessed/100points.data");  //open the file
+    vector<Node> shortestPath;    
+    ifstream file("preProcessed/1000points.data");  //open the file
+    string line;
     if (file.is_open()){
         int i = 0 ;
         while(getline (file,line)){
-            vector<Node> shortestPath;
             istringstream iss(line);
             int isFound = 0 ;
-            for(std::string line; iss >> line; )
+            for(std::string line; iss >> line; ){
                 if( start == stoi(line) or end == stoi(line)) 
                     isFound++;
-                if(isFound == 2)
-                    shortestPath.push_back(graph.getNode(line));
+                if(isFound == 2){
+                    shortestPath.push_back(graph.getNode(stoi(line)));
+                }
+
+            }
+            if(!shortestPath.empty()){
+                shortestPaths.push_back(shortestPath);
+                shortestPath.clear();
+                return shortestPaths;                
+            }
             i++;
         }
         file.close();
+        return shortestPaths;
     }
 }
 
@@ -208,11 +218,12 @@ void draw(Graph graph){
         }
 
         if(!start.empty() and !end.empty() ){
-            if(simpleSearch){
-                shortestPaths = sequentialSearch(graph,start,end);
-            }else if(multipleSearch){
-                shortestPaths = parallelSearch(graph,start,end);
-            }
+            //shortestPaths =  isPreProcessed(graph,0,2);
+            // if(simpleSearch){
+            //     shortestPaths = sequentialSearch(graph,start,end);
+            // }else if(multipleSearch){
+            //     shortestPaths = parallelSearch(graph,start,end);
+            // }
             selectedNode.clear();
             start.clear();
             end.clear();
