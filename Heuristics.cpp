@@ -347,7 +347,7 @@ void  Heuristics::preprocessing(Graph graph ){
   	myfile.open ("preprocessed/10000points.data");
   	
 
-  	for(int m=0;m<graph.numberNodes;m++){
+  	/*for(int m=0;m<graph.numberNodes;m++){
   		for(int n=0;n<graph.numberNodes;n++){
   			if(mediaDistance*0.95 < calculateDistance(graph.nodes[m],graph.nodes[n])  ){
 	  			shortestPath = Astar(graph,graph.nodes[m],graph.nodes[n]);
@@ -358,7 +358,7 @@ void  Heuristics::preprocessing(Graph graph ){
 			  	myfile<<"\n";
 			}
 		}  	
-	}
+	}*/
 
   	myfile.close();
 
