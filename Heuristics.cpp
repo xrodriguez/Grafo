@@ -6,6 +6,8 @@
 #include <list>
 #include <vector>
 #include <map>
+#include <fstream>
+
 
 using namespace std;
 
@@ -302,10 +304,74 @@ vector<Node>  Heuristics::Dijkstra(Graph graph , Node start,Node end){
 
 
 
-/*void  Heuristics::contractionHierarchie(Graph graph , Node start,Node end){
+vector<Node>  Heuristics::contractionHierarchie(Graph graph , Node start,Node end){
+	vector<Node> output;
+
+	cout<<"preprocessing"<<endl;
+
+	if(graph.numberNodes == 0){
+		cout<<"have Not nodes"<<endl;
+	}else{
+		cout<<"have "<< graph.numberNodes <<" Nodes"<<endl;
+	}
+
+	int k = 0;
+	cout<< graph.nodes[0].tag <<endl;
 
 
-}*/
+	/*
+	while(graph.numberNodes!=0){
+		cout<< graph.edges.size() <<endl;
+
+
+		
+	}*/
+
+	return output;
+}
+
+
+
+void  Heuristics::preprocessing(Graph graph ){
+	vector<Node> shortestPath;
+	cout<<"void:"<<endl;
+	shortestPath = Astar(graph,graph.nodes[0],graph.nodes[7]);
+	cout<<shortestPath.size()<<endl;
+
+
+	float mediaDistance = calculateDistance(graph.nodes[0],graph.nodes[2]);
+
+
+
+
+
+	ofstream myfile;
+  	myfile.open ("example.txt");
+  	
+
+  	for(int m=0;m<graph.numberNodes;m++){
+  		for(int n=0;n<graph.numberNodes;n++){
+  			if(mediaDistance*0.75 < calculateDistance(graph.nodes[m],graph.nodes[n])  ){
+	  			shortestPath = Astar(graph,graph.nodes[m],graph.nodes[n]);
+			  	myfile <<graph.nodes[m].tag << " "<< graph.nodes[n].tag <<" ";// "Writing this to a file.\n";
+			  	for(int i=0; i<shortestPath.size(); i++){
+			  		myfile <<shortestPath[i].tag<<" ";
+			  	}
+			  	myfile<<"\n";
+			}
+		}  	
+	}
+
+  	myfile.close();
+
+}
+
+
+
+
+
+
+
 
 
 

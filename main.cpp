@@ -243,6 +243,7 @@ void draw(Graph graph){
 
 int main()
 {
+
     vector<Node> nodes ;
 
     vector<Edge> edges ;
@@ -268,9 +269,11 @@ int main()
         }
         file.close();
     }
-
     Graph graph(nodes,edges);
     //graph.printGraph();
+    Heuristics heuristics;
+    heuristics.preprocessing(graph);
+    
     draw(graph);
 
 

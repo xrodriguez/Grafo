@@ -40,7 +40,7 @@ Node Graph::getNode(int tag){
 void Graph::printGraph(){
 	for (int i = 0; i < this->numberNodes; i++){
 		for (auto p=adjacenseList[i].begin(); p!=adjacenseList[i].end(); p++){
-			cout << "(" << i << "," << p->first->tag << "," << p->second << ") ";
+			//cout << "(" << i << "," << p->first->tag << "," << p->second << ") ";
 		}
 		cout << endl ;
 	}
