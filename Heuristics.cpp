@@ -130,7 +130,7 @@ vector<Node>  Heuristics::Astar(Graph graph , Node start,Node end){
 
 
 
-
+/*
 vector<Node>  Heuristics::BidirectionalAstar(Graph graph , Node start,Node end){
 	vector<Node> failure ;
 	cout<<  "NODOS: " <<start.tag<<" - "<<end.tag<<endl;
@@ -200,35 +200,15 @@ vector<Node>  Heuristics::BidirectionalAstar(Graph graph , Node start,Node end){
 
 
 
-        //to second process.
-
-        /*
-		Node* bestNode = NULL;		
-		map<int,Node* >::iterator _it;
-		for ( _it = openMap2.begin(); _it != openMap2.end(); ++_it ){
-            Node* candidate = _it->second;
-            if ( bestNode == NULL ){
-            	bestNode = candidate;
-            }
-            else if ( candidate->f < bestNode->f ){
-                	bestNode = candidate;
-            }
-        }
-        Node current = *(bestNode);
-        openMap.erase( current.tag );
-        closedMap[current.tag] = &current;
-		*/
-
-
 
 
 
 	}
 	return failure; 	
 }
+*/
 
-
-
+/*
 vector<Node>  Heuristics::Dijkstra(Graph graph , Node start,Node end){
 	vector<Node> failure ;
 	cout<<  "NODOS: " <<start.tag<<" - "<<end.tag<<endl;
@@ -300,10 +280,10 @@ vector<Node>  Heuristics::Dijkstra(Graph graph , Node start,Node end){
 	}
 	return failure; 	
 }
+*/
 
 
-
-
+/*
 vector<Node>  Heuristics::contractionHierarchie(Graph graph , Node start,Node end){
 	vector<Node> output;
 
@@ -317,16 +297,6 @@ vector<Node>  Heuristics::contractionHierarchie(Graph graph , Node start,Node en
 
 	int k = 0;
 	cout<< graph.nodes[0].tag <<endl;
-
-
-	/*
-	while(graph.numberNodes!=0){
-		cout<< graph.edges.size() <<endl;
-
-
-		
-	}*/
-
 	return output;
 }
 
@@ -347,7 +317,7 @@ float maxDistance(Graph graph){
 
 	return max;
 }
-
+*/
 
 
 void  Heuristics::preprocessing(Graph graph ){
@@ -356,9 +326,10 @@ void  Heuristics::preprocessing(Graph graph ){
 
 
 	//float max = calculateDistance(graph.nodes[0],graph.nodes[2]);
+
+/*
 	float mediaDistance = maxDistance(graph);
-	//cout<<mediaDistance<<endl;
-	//cout<<max<<endl;
+
 
 
 	ofstream myfile;
@@ -367,7 +338,7 @@ void  Heuristics::preprocessing(Graph graph ){
 
   	for(int m=0;m<graph.numberNodes;m++){
   		for(int n=0;n<graph.numberNodes;n++){
-  			if(mediaDistance*0.80 < calculateDistance(graph.nodes[m],graph.nodes[n])  ){
+  			if(mediaDistance*0.90 < calculateDistance(graph.nodes[m],graph.nodes[n])  ){
 	  			shortestPath = Astar(graph,graph.nodes[m],graph.nodes[n]);
 			  	myfile <<graph.nodes[m].tag << " "<< graph.nodes[n].tag <<" ";// "Writing this to a file.\n";
 			  	for(int i=0; i<shortestPath.size(); i++){
@@ -379,7 +350,7 @@ void  Heuristics::preprocessing(Graph graph ){
 	}
 
   	myfile.close();
-
+*/	
 }
 
 

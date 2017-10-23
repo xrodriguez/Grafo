@@ -14,25 +14,36 @@
 using namespace std;
 using namespace sf;
 
-/*vector<vector<Node>> isPreProcessed(Grafo grafo , int start , int end){
-    vector<vector<Node>> shortestPaths;
-    ifstream file("preProcessed/100points.data");  //open the file
+vector<Node> preProcessed(Graph graph , int start , int end , bool &invalidPath){
+    //vector<vector<Node>> shortestPaths;
+    vector<Node> shortestPath;    
+    ifstream file("preProcessed/10000points.data");  //open the file
+    string line;
     if (file.is_open()){
         int i = 0 ;
         while(getline (file,line)){
-            vector<Node> shortestPath;
             istringstream iss(line);
-            int isFound = 0 ;
-            for(std::string line; iss >> line; )
-                if( start == stoi(line) or end == stoi(line)) 
-                    isFound++;
-                if(isFound == 2)
-                    shortestPath.push_back(graph.getNode(line));
+            int isFound = 0 , j = 0 ;
+            for(std::string line; iss >> line; ){
+                if(j == 0 and start == stoi(line)) isFound++;    
+                if(j == 1 and end == stoi(line)) isFound++;
+                if( j >= 2 and isFound == 2) shortestPath.push_back(graph.getNode(stoi(line)));
+                if( j >= 2 and isFound !=2 ) break;
+                j++;
+            }
+            if(!shortestPath.empty() and isFound == 2 ){
+                cout << "Pre-processed" << endl;
+                //shortestPaths.push_back(shortestPath);
+                return shortestPath;                
+            }else if( shortestPath.empty() and isFound ==2 ){
+                invalidPath = true; 
+            }
             i++;
         }
         file.close();
+        return shortestPath;
     }
-}*/
+}
 
 vector<vector<Node>> sequentialSearch(Graph graph,vector<Node> start, vector<Node> end){
     int i,j ;
@@ -42,12 +53,18 @@ vector<vector<Node>> sequentialSearch(Graph graph,vector<Node> start, vector<Nod
     double t0 = omp_get_wtime();
     for( i=0; i < start.size(); i++){
         for( j=0; j < end.size(); j++){
-           shortestPath = heuristics.Astar(graph,start[i],end[j]);
-            if(shortestPath.empty()){
-                cout << "ERROR : RUTA INVALIDA ";
-            }else{
-                shortestPaths.push_back(shortestPath);
+            bool invalidPath = false;
+            shortestPath =  preProcessed(graph,start[i].tag,end[j].tag,invalidPath);
+            //shortestPaths =  preProcessed(graph,0,201,invalidPath);
+            if(invalidPath) cout << "INVALID PATH" << endl; 
+            else if(shortestPath.empty()){
+                cout << "Is not pre-processed" << endl;
+                shortestPath = heuristics.Astar(graph,start[i],end[j]);
+                if(shortestPath.empty()){
+                    cout << "INVALID PATH";
+                }
             }
+            shortestPaths.push_back(shortestPath);
         }
     }
     double t1 = omp_get_wtime();
@@ -67,10 +84,15 @@ vector<vector<Node>> parallelSearch(Graph graph,vector<Node> start, vector<Node>
     #pragma omp parallel for num_threads(4) schedule(dynamic) private(shortestPath,i,j) shared(shortestPaths,graph,start,end)
     for( i=0; i < start.size(); i++){
         for( j=0; j < end.size(); j++){
-            shortestPath = heuristics.Astar(graph,start[i],end[j]);
-            if(shortestPath.empty()){
-                cout << "ERROR : RUTA INVALIDA " << endl;
-            }else{
+            bool invalidPath = false;
+            shortestPath =  preProcessed(graph,start[i].tag,end[j].tag,invalidPath);
+            if(invalidPath) cout << "INVALID PATH" << endl; 
+            else if(shortestPath.empty()){
+                cout << "Is not pre-processed" << endl;
+                shortestPath = heuristics.Astar(graph,start[i],end[j]);
+                if(shortestPath.empty()){
+                    cout << "INVALID PATH" << endl;
+                }
             }
             # pragma omp critical
             shortestPaths.push_back(shortestPath);
@@ -131,21 +153,27 @@ void draw(Graph graph){
                         if(start.empty()){
                             window.clear();
                             start = graph.getNodesByPoint(x,y);
-                            Text text(to_string((start[0]).tag), font);
-                            text.setCharacterSize(15);
-                            //text.setStyle(Text::Bold);
-                            text.setColor(Color::Red);
-                            text.setPosition(start[0].x,start[0].y);
-                            window.draw(text);
+                            if(!start.empty()){
+                                Text text(to_string((start[0]).tag), font);
+                                text.setCharacterSize(15);
+                                //text.setStyle(Text::Bold);
+                                text.setColor(Color::Red);
+                                text.setPosition(start[0].x,start[0].y);
+                                window.draw(text);
+                            }
 
                         }else if(end.empty()){
+
                             end = graph.getNodesByPoint(x,y);
-                            Text text(to_string((end[0]).tag), font);
-                            text.setCharacterSize(15);
-                            //text.setStyle(Text::Bold);
-                            text.setColor(Color::Red);
-                            text.setPosition(end[0].x,end[0].y);
-                            window.draw(text);
+                            if(!end.empty()){
+
+                                Text text(to_string((end[0]).tag), font);
+                                text.setCharacterSize(15);
+                                //text.setStyle(Text::Bold);
+                                text.setColor(Color::Red);
+                                text.setPosition(end[0].x,end[0].y);
+                                window.draw(text);
+                            }
                         }
                         simpleSearch = true;
                     }else if (event.mouseButton.button == Mouse::Right){
@@ -213,7 +241,7 @@ void draw(Graph graph){
             }else if(multipleSearch){
                 shortestPaths = parallelSearch(graph,start,end);
             }
-            selectedNode.clear();
+            //selectedNode.clear();
             start.clear();
             end.clear();
         }
