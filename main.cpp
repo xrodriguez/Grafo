@@ -14,7 +14,7 @@
 using namespace std;
 using namespace sf;
 
-vector<vector<Node>> isPreProcessed(Grafo grafo , int start , int end){
+/*vector<vector<Node>> isPreProcessed(Grafo grafo , int start , int end){
     vector<vector<Node>> shortestPaths;
     ifstream file("preProcessed/100points.data");  //open the file
     if (file.is_open()){
@@ -32,7 +32,7 @@ vector<vector<Node>> isPreProcessed(Grafo grafo , int start , int end){
         }
         file.close();
     }
-}
+}*/
 
 vector<vector<Node>> sequentialSearch(Graph graph,vector<Node> start, vector<Node> end){
     int i,j ;
@@ -248,7 +248,7 @@ int main()
 
     vector<Edge> edges ;
     string line;
-    ifstream file("data/Graphs/1000points.data");  //open the file
+    ifstream file("data/Graphs/10000points.data");  //open the file
     if (file.is_open()){
         int i = 0 , numberNodes;
         while(getline (file,line)){

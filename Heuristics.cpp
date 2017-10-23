@@ -334,9 +334,7 @@ vector<Node>  Heuristics::contractionHierarchie(Graph graph , Node start,Node en
 
 void  Heuristics::preprocessing(Graph graph ){
 	vector<Node> shortestPath;
-	cout<<"void:"<<endl;
-	shortestPath = Astar(graph,graph.nodes[0],graph.nodes[7]);
-	cout<<shortestPath.size()<<endl;
+	shortestPath = Astar(graph,graph.nodes[644],graph.nodes[7474]);
 
 
 	float mediaDistance = calculateDistance(graph.nodes[0],graph.nodes[2]);
@@ -346,12 +344,12 @@ void  Heuristics::preprocessing(Graph graph ){
 
 
 	ofstream myfile;
-  	myfile.open ("example.txt");
+  	myfile.open ("preprocessed/10000points.data");
   	
 
   	for(int m=0;m<graph.numberNodes;m++){
   		for(int n=0;n<graph.numberNodes;n++){
-  			if(mediaDistance*0.75 < calculateDistance(graph.nodes[m],graph.nodes[n])  ){
+  			if(mediaDistance*0.95 < calculateDistance(graph.nodes[m],graph.nodes[n])  ){
 	  			shortestPath = Astar(graph,graph.nodes[m],graph.nodes[n]);
 			  	myfile <<graph.nodes[m].tag << " "<< graph.nodes[n].tag <<" ";// "Writing this to a file.\n";
 			  	for(int i=0; i<shortestPath.size(); i++){
